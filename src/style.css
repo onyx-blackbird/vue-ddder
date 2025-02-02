@@ -1,0 +1,56 @@
+:root {
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	margin: 0;
+}
+
+a {
+	font-weight: 500;
+	color: #333333;
+	text-decoration: inherit;
+}
+a:hover {
+	color: #000000;
+}
+
+h1 {
+	font-size: 2em;
+	line-height: 1.1;
+}
+h2 {
+	font-size: 1.8em;
+	line-height: 1.1;
+}
+
+#app {
+	display: grid;
+	grid-template-rows: 1fr;
+	height: 100vh;
+	width: 100vw;
+}
+main {
+	display: grid;
+	grid-template-columns: 200px 1fr 300px;
+	overflow: hidden;
+}
+.center {
+	overflow: hidden;
+}
+aside {
+	padding: 0 1rem;
+}
+aside.left {
+	border-right: 1px solid #333333;
+	overflow: scroll;
+}
+aside.right {
+	border-left: 1px solid #333333;
+}

@@ -3,6 +3,7 @@ import seedrandom from 'seedrandom';
 const RNG = seedrandom();
 const IDS = new Array<string>();
 
+export const OFFSET_X = 200;
 export const GRID_SIZE = 20;
 export const TRANSFER_TYPE = 'applicaiton/json';
 export const COPY_EFFECT = 'copy';

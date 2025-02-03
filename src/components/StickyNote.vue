@@ -4,16 +4,13 @@ import { vResizeObserver } from '@vueuse/components';
 
 import { debounce, GRID_SIZE } from '../Uitls';
 import { appStore } from '../store/App';
-
-import Note, { NOTE_CHANGED } from '../models/Note';
+import type Note from '../models/Note';
 
 interface Props {
 	note: Note,
 	readonly?: boolean,
 }
 const props = defineProps<Props>();
-
-const emit = defineEmits([NOTE_CHANGED]);
 
 const titleRef = toRef(props.note.title);
 const editMode = ref(false);
@@ -22,14 +19,12 @@ const input = useTemplateRef('title-input');
 function onDblCLick() {
 	if (props.readonly) return;
 	editMode.value = true;
-	nextTick(() => {
-        input.value!.focus();
-	});
+	nextTick(() => input.value!.focus());
 }
 
 function onChange() {
 	editMode.value = false;
-	emit(NOTE_CHANGED, props.note, titleRef.value);
+	props.note.title = titleRef.value;
 }
 
 const onResizeObserver = debounce(
@@ -86,7 +81,7 @@ const onResizeObserver = debounce(
 .note.actor {
   background-color: gold;
 }
-.note.oject {
+.note.object {
   background-color: lemonchiffon;
 }
 .note.view {

@@ -1,13 +1,10 @@
 import { generateUniqueId } from "../Uitls";
 import { Coordinates, Size } from "./Layout";
 
-export const NOTE_MOVED = 'note-moved';
-export const NOTE_CLICKED = 'note-clicked';
-export const NOTE_CHANGED = 'note-changed';
-
 export const SIZE = 140;
 
 export default class Note {
+
 	private _id: string;
 	private _type: string;
 	private _title: string = '';
@@ -101,7 +98,7 @@ export const NOTE_TYPES: Array<Note> = [
 	new Note('policy', 'Policy', 0, 0),
 	new Note('external', 'External System', 0, 0),
 	new Note('actor', 'Actor', 0, 0),
-	new Note('oject', 'Oject', 0, 0),
+	new Note('object', 'Object', 0, 0),
 	new Note('view', 'View', 0, 0),
 	new Note('openissue', 'Open Issue', 0, 0),
 	new Note('comment', 'Comment', 0, 0),

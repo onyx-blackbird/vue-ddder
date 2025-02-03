@@ -1,128 +1,68 @@
 <script setup lang="ts">
-import { computed, ref, type Ref } from 'vue';
-import { ModalsContainer } from 'vue-final-modal'
+import { computed, onMounted, ref, type Ref } from 'vue';
 
-import { COPY_EFFECT, GRID_SIZE, TRANSFER_TYPE, type MoveData } from '../Uitls';
-import useFile from '../composables/File';
+import useFile from '../composables/useFile';
+import useNote from '../composables/useNote';
 import { appStore } from '../store/App';
-import { noteStore } from '../store/Note';
 import Note, { NOTE_TYPES } from '../models/Note';
 
 import NoteForm from './NoteForm.vue';
 import EditorGrid from './EditorGrid.vue'
 import StickyNote from './StickyNote.vue'
 
-interface DragData {
-	type: string,
-	title: string,
-	x: number,
-	y: number,
-}
-
-const OFFSET_X = 200;
-
-const notes = computed(() => noteStore.getState().notes);
 const snap = computed({
-	get() {
-		return appStore.getState().snap;
-	},
-	set(newValue: boolean) {
-		appStore.setSnap(newValue);
-	}
+	get: () => appStore.getState().snap,
+	set: (newValue: boolean) => appStore.setSnap(newValue)
 });
 const gridWidth = computed({
-	get() {
-		return appStore.getState().gridSize.width;
-	},
-	set(newValue: number) {
-		appStore.setGridSize(newValue, appStore.getState().gridSize.height);
-	}
+	get: () => appStore.getState().gridSize.width,
+	set: (newValue: number) => appStore.setGridSize(newValue, appStore.getState().gridSize.height)
 });
 const gridHeight = computed({
-	get() {
-		return appStore.getState().gridSize.height;
-	},
-	set(newValue: number) {
-		appStore.setGridSize(appStore.getState().gridSize.width, newValue);
-	}
+	get: () => appStore.getState().gridSize.height,
+	set: (newValue: number) => appStore.setGridSize(appStore.getState().gridSize.width, newValue)
 });
 const currentNote: Ref<Note | null> = ref(null);
 const showModal = ref(false);
 const fileName = ref('export.json');
 
 const { fileContents, fileMessage, onLoadFile, downloadAsJson } = useFile();
-
-function onDragNoteStart(evt: DragEvent, note: Note): void {
-	console.log(appStore.getState().gridSize.height)
-	if (evt.dataTransfer && evt.target instanceof HTMLElement) {
-		evt.dataTransfer.dropEffect = COPY_EFFECT;
-		evt.dataTransfer.effectAllowed = COPY_EFFECT;
-		const dragData: DragData = {
-			type: note.type,
-			title: note.title,
-			x: evt.pageX - evt.target.offsetLeft,
-			y: evt.pageY - evt.target.offsetTop,
-		}
-		evt.dataTransfer.setData(TRANSFER_TYPE, JSON.stringify(dragData));
-	}
-}
-
-function onDropNote(evt: DragEvent): void {
-	if (evt.dataTransfer && evt.dataTransfer.effectAllowed === COPY_EFFECT) {
-		const dragData: DragData = JSON.parse(evt.dataTransfer.getData(TRANSFER_TYPE));
-		let x = Math.max(0, evt.pageX - dragData.x - OFFSET_X);
-		let y = Math.max(0, evt.pageY - dragData.y);
-		if (appStore.getState().snap) {
-			x = Math.ceil(x / GRID_SIZE) * GRID_SIZE;
-			y = Math.ceil(y / GRID_SIZE) * GRID_SIZE;
-		}
-		const note = new Note(dragData.type, dragData.title, x, y);
-		noteStore.addNote(note);
-	}
-}
-
-function onNoteMoved(moveData: MoveData): void {
-	const note = notes.value.find(note => note.id === moveData.noteId);
-	note?.move(moveData.x, moveData.y);
-}
-
-function onNoteChanged(note: Note, newTitle: string): void {
-	note.title = newTitle;
-}
+const { onNewNoteDragStart, onNewNoteDrop } = useNote();
 
 function onExport() {
-	const jsonNotes = notes.value.map(note => note.toJsonObject())
+	const jsonNotes = appStore.getState().notes.map(note => note.toJsonObject());
 	downloadAsJson(fileName.value, JSON.stringify(jsonNotes));
 }
 
 function onImport() {
 	if (fileContents.value) {
-		noteStore.clear();
+		appStore.clear();
 		const importNotes: Array<Note> = JSON.parse(fileContents.value);
-		importNotes.forEach(note => noteStore.addNote(Note.fromJsonObject(note)));
+		importNotes.forEach(note => appStore.addNote(Note.fromJsonObject(note)));
 	}
 }
+
+onMounted(() => {
+	document.title = 'Event Storming';
+});
 </script>
 
 <template>
 	<main>
 		<aside class="left">
-			<h1>Notes</h1>
+			<h2>Notes</h2>
 			<sticky-note v-for="(type) in NOTE_TYPES" 
 				:key="type.id"
 				:note="type"
 				:readonly="true"
 				:style="type.style"
-				@dragstart="onDragNoteStart($event, type)">
+				@dragstart="onNewNoteDragStart($event, type)">
 			</sticky-note>
 		</aside>
 		<div class="center" v-dragscroll:nochilddrag>
 			<editor-grid
-				:notes="notes"
 				@dragover.prevent
-				@drop="onDropNote"
-				@note-moved="onNoteMoved"
-				@note-changed="onNoteChanged">
+				@drop="onNewNoteDrop">
 			</editor-grid>
 		</div>
 		<aside class="right">
@@ -158,10 +98,27 @@ function onImport() {
 	<note-form v-if="currentNote" v-model="showModal"
 		:note="currentNote">
 	</note-form>
-	<modals-container />
 </template>
 
 <style>
+main {
+	display: grid;
+	grid-template-columns: 200px 1fr 300px;
+	overflow: hidden;
+}
+.center {
+	overflow: hidden;
+}
+aside {
+	padding: 0 1rem;
+}
+aside.left {
+	border-right: 1px solid #333333;
+	overflow-y: scroll;
+}
+aside.right {
+	border-left: 1px solid #333333;
+}
 form.options {
 	border: 1px solid #333333;
 	padding: 0.5em;

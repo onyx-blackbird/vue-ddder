@@ -1,61 +1,32 @@
 <script setup lang="ts">
-import { GRID_SIZE, MOVE_EFFECT, TRANSFER_TYPE, type MoveData } from '../Uitls';
-import { appStore } from '../store/App';
-
-import Note, { NOTE_CHANGED, NOTE_CLICKED, NOTE_MOVED } from '../models/Note';
-
-import StickyNote from './StickyNote.vue';
 import { computed } from 'vue';
 
-interface Props {
-	notes: Note[],
-}
-defineProps<Props>();
+import { GRID_SIZE } from '../Uitls';
+import { appStore } from '../store/App';
+import useNote from '../composables/useNote';
+import useArrow from '../composables/useArrow';
 
-const emit = defineEmits([NOTE_MOVED, NOTE_CLICKED, NOTE_CHANGED]);
+import StickyNote from './StickyNote.vue';
+import ConnectionArrow from './ConnectionArrow.vue';
 
-const gridStyle = GRID_SIZE + 'px ' + GRID_SIZE + 'px';
-const gridSize = computed(() => {
+const notes = computed(() => appStore.getState().notes);
+const arrows = computed(() => appStore.getState().arrows);
+
+const backgroundSize = GRID_SIZE + 'px ' + GRID_SIZE + 'px';
+const gridStyle = computed(() => {
 	return {
 		width: appStore.getState().gridSize.width + 'px',
 		height: appStore.getState().gridSize.height + 'px',
 	}
 });
 
-function onDragNoteStart(evt: DragEvent, note: Note): void {
-	if (evt.dataTransfer && evt.target instanceof HTMLElement) {
-		evt.dataTransfer.dropEffect = MOVE_EFFECT;
-		evt.dataTransfer.effectAllowed = MOVE_EFFECT;
-		const dragData: MoveData = {
-			noteId: note.id,
-			x: evt.pageX - evt.target.offsetLeft,
-			y: evt.pageY - evt.target.offsetTop,
-		}
-		evt.dataTransfer.setData(TRANSFER_TYPE, JSON.stringify(dragData));
-	}
-}
-function onDropNote(evt: DragEvent): void {
-	if (evt.dataTransfer) {
-		const moveData: MoveData = JSON.parse(evt.dataTransfer.getData(TRANSFER_TYPE));
-		let x = Math.max(0, evt.pageX - moveData.x);
-		let y = Math.max(0, evt.pageY - moveData.y);
-		if (appStore.getState().snap) {
-			x = Math.ceil(x / GRID_SIZE) * GRID_SIZE;
-			y = Math.ceil(y / GRID_SIZE) * GRID_SIZE;
-		}
-		moveData.x = x;
-		moveData.y = y;
-		emit(NOTE_MOVED, moveData);
-	}
-}
-function onNoteChanged(note: Note, newTitle: string) {
-	emit(NOTE_CHANGED, note, newTitle);
-}
+const { onNoteChanged, onDragNoteStart, onDropNote } = useNote();
+const { onMouseDown, onMouseUp } = useArrow();
 </script>
 
 <template>
 	<div class="grid" data-dragscroll
-		:style="gridSize"
+		:style="gridStyle"
 		@contextmenu.prevent
 		@dragover.prevent
 		@drop="onDropNote">
@@ -65,15 +36,21 @@ function onNoteChanged(note: Note, newTitle: string) {
 			:note="note"
 			:style="note.style"
 			@note-changed="onNoteChanged"
-			@dragstart="onDragNoteStart($event, note)">
+			@dragstart="onDragNoteStart($event, note)"
+			@mousedown="onMouseDown"
+			@mouseup="onMouseUp">
 			{{ note.title }}
 		</sticky-note>
+		<connection-arrow v-for="(arrow) in arrows"
+			:key="arrow.id"
+			:arrow="arrow">
+		</connection-arrow>
 	</div>
 </template>
 
 <style>
 .grid {
-  background-size: v-bind(gridStyle);
+  background-size: v-bind(backgroundSize);
   background-image:
     linear-gradient(to right, #dddddd 1px, transparent 1px),
     linear-gradient(to bottom, #dddddd 1px, transparent 1px);

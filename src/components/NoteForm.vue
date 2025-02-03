@@ -2,16 +2,17 @@
 import { toRef } from 'vue';
 import { VueFinalModal } from 'vue-final-modal'
 
-import Note, { NOTE_CHANGED } from '../models/Note';
+import type Note from '../models/Note';
 
 interface Props {
 	note: Note,
 }
 const props = defineProps<Props>();
-
-const emit = defineEmits([NOTE_CHANGED]);
-
 const title = toRef(props.note.title);
+
+function onNoteChange() {
+	props.note.title = title.value;
+}
 </script>
 
 <template>
@@ -20,7 +21,7 @@ const title = toRef(props.note.title);
 		content-class="form-modal-content"
 		overlay-transition="vfm-fade"
 		content-transition="vfm-fade">
-	<form @submit.prevent="emit(NOTE_CHANGED, title)">
+	<form @submit.prevent="onNoteChange">
 		<input type="text" v-model="title">
 		<input type="submit" value="Save">
 	</form>

@@ -19,18 +19,27 @@ export default function useFile(dropText?: string) {
 			}
 		}
 	}
+
+	function ensureExtension(fileName: string, extension: string) {
+		return (fileName.endsWith('.' + extension)) ? fileName : fileName + '.' + extension;
+	}
 	
-	function downloadAsJson(fileName: string, fileContents: string): void {
-		const extension = (fileName.endsWith('.json')) ? '' : '.json';
+	function download(fileName: string, fileContents: string): void {
 		const url = window.URL.createObjectURL(new Blob([fileContents]));
 		const link = document.createElement('a');
 		link.href = url;
-		link.setAttribute('download', fileName + extension);
+		link.setAttribute('download', fileName);
 		document.body.appendChild(link);
 		link.click();
 	}
+	
+	function downloadAsJson(fileName: string, fileContents: string): void {
+		download(ensureExtension(fileName, 'json'), fileContents);
+	}
 
 	return {
+		ensureExtension,
+		download,
 		downloadAsJson,
 		onLoadFile,
 		fileMessage,

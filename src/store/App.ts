@@ -15,6 +15,11 @@ interface JsonModel {
 	arrows: Array<any>;
 }
 
+interface GlossaryModel {
+	title: string,
+	description: string,
+}
+
 const DEFAULT_SIZE = new Size(3000, 2000);
 
 class AppStore extends Store<AppState> {
@@ -79,6 +84,15 @@ class AppStore extends Store<AppState> {
 		this.state.arrows.splice(0);
 		jsonModel.notes.forEach(note => this.addNote(Note.fromJsonObject(note)));
 		jsonModel.arrows.forEach(arrow => this.addArrow(Arrow.fromJsonObject(arrow)));
+	}
+
+	public exportGlossary(): Array<GlossaryModel> {
+		const glossary = new Array();
+		this.state.notes.forEach(note => glossary.push({
+			title: note.title,
+			description: note.description
+		}));
+		return glossary;
 	}
 
 }

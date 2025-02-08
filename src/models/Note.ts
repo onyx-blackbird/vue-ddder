@@ -3,11 +3,15 @@ import { Coordinates, Size } from "./Layout";
 
 export const SIZE = 140;
 
+export const CHANGE_NOTE = 'change-note';
+export const DELETE_NOTE = 'delete-note';
+
 export default class Note {
 
 	private _id: string;
 	private _type: string;
 	private _title: string = '';
+	private _description: string = '';
 	private _coordinates: Coordinates;
 	private _size: Size;
 
@@ -36,8 +40,16 @@ export default class Note {
 		return this._title;
 	}
 
-	set title(title) {
+	set title(title: string) {
 		this._title = title;
+	}
+
+	get description() {
+		return this._description;
+	}
+
+	set description(descriptio: string) {
+		this._description = descriptio;
 	}
 
 	get coordinates() {

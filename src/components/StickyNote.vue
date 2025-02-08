@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { nextTick, ref, toRef, useTemplateRef } from  'vue';
+import { nextTick, ref, computed, useTemplateRef } from  'vue';
 import { vResizeObserver } from '@vueuse/components';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { debounce, GRID_SIZE } from '../Uitls';
 import { appStore } from '../store/App';
-import type Note from '../models/Note';
+import Note, { CHANGE_NOTE, DELETE_NOTE } from '../models/Note';
 
 interface Props {
 	note: Note,
@@ -12,7 +13,12 @@ interface Props {
 }
 const props = defineProps<Props>();
 
-const titleRef = toRef(props.note.title);
+const emit = defineEmits([CHANGE_NOTE, DELETE_NOTE]);
+
+const titleRef = computed({
+	get: () => props.note.title,
+	set: (newValue: string) => props.note.title = newValue
+});
 const editMode = ref(false);
 const input = useTemplateRef('title-input');
 
@@ -24,7 +30,6 @@ function onDblCLick() {
 
 function onChange() {
 	editMode.value = false;
-	props.note.title = titleRef.value;
 }
 
 const onResizeObserver = debounce(
@@ -46,8 +51,16 @@ const onResizeObserver = debounce(
 		v-resize-observer="onResizeObserver"
 		:class="note.type"
 		@dblclick="onDblCLick">
+		<div class="edit" v-if="!readonly">
+			<font-awesome-icon :icon="['far', 'pen-to-square']"
+				@click="emit(CHANGE_NOTE)">
+			</font-awesome-icon>
+			<font-awesome-icon :icon="['far', 'trash-can']"
+				@click="emit(DELETE_NOTE)">
+			</font-awesome-icon>
+		</div>
 		<span v-show="!editMode">{{note.title}}</span>
-		<input type="text" class="edit"
+		<input type="text" class="editTitle"
 			ref="title-input"
 			v-show="editMode"
 			v-model="titleRef"
@@ -100,8 +113,18 @@ const onResizeObserver = debounce(
 	overflow: hidden;
 }
 
-.note .edit,
-.note .edit:focus {
+.note .edit {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+}
+.note .edit svg {
+	padding-left: 5px;
+	cursor: pointer;
+}
+
+.note .editTitle,
+.note .editTitle:focus {
 	background-color: transparent;
 	width: 90%;
 	border: 1px solid #333333;

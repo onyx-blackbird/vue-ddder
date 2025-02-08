@@ -1,16 +1,15 @@
 import { generateUniqueId } from "../Uitls";
-import { Coordinates } from "./Layout";
 
 export default class Arrow {
 
 	private _id: string;
-	private _start: Coordinates;
-	private _end: Coordinates;
+	private _startNoteId: string;
+	private _endNoteId: string;
 
-	constructor(start: Coordinates, end: Coordinates) {
+	constructor(startNoteId: string, endNoteId: string) {
 		this._id = generateUniqueId();
-		this._start = start;
-		this._end = end;
+		this._startNoteId = startNoteId;
+		this._endNoteId = endNoteId;
 	}
 
 	get id() {
@@ -21,59 +20,26 @@ export default class Arrow {
 		this._id = id;
 	}
 
-	get start() {
-		return this._start;
+	get startNoteId() {
+		return this._startNoteId;
 	}
 
-	set start(start: Coordinates) {
-		this._start = start;
-	}
-
-	get end() {
-		return this._end;
-	}
-
-	set end(end: Coordinates) {
-		this._end = end;
-	}
-
-	get style(): any {
-		const length = this.calculateLength();
-		const angle = this.calculateAngle();
-		return {
-			left: this.start.x + 'px',
-			top: this.start.y + 'px',
-			width: (length-10) + 'px',
-			transform: `rotate(${angle}deg)`
-		};
+	get endNoteId() {
+		return this._endNoteId;
 	}
 
 	public toJsonObject(): Object {
 		return {
 			id: this._id,
-			start: {
-				x: this._start.x,
-				y: this._start.y
-			},
-			end: {
-				x: this._end.x,
-				y: this._end.y
-			},
+			startNoteId: this._startNoteId,
+			endNoteId: this._endNoteId,
 		}
 	}
 
 	public static fromJsonObject(jsonArrow: Arrow): Arrow {
-		const note = new Arrow(jsonArrow.start, jsonArrow.end);
+		const note = new Arrow(jsonArrow.startNoteId, jsonArrow.endNoteId);
 		note.id = jsonArrow.id;
 		return note;
-	}
-
-	private calculateAngle(): number {
-		return Math.atan2(this._start.y - this._end.y, this._start.x - this._end.x) * 180 / Math.PI + 180;
-	}
-
-	private calculateLength(): number {
-		return Math.round(Math.sqrt(Math.pow(this._start.y - this._end.y, 2) + Math.pow(this._start.x - this._end.x, 2)));
 	}
 
 }

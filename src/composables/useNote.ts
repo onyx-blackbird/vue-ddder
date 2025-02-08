@@ -66,16 +66,11 @@ export default function useNote() {
 		}
 	}
 
-	function onNoteChanged(note: Note, newTitle: string): void {
-		note.title = newTitle;
-	}
-
 	return {
 		onNewNoteDragStart,
 		onNewNoteDrop,
 		onDragNoteStart,
 		onDropNote,
-		onNoteChanged,
 	};
 
 }

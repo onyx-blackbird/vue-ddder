@@ -1,10 +1,9 @@
 import { ref, type Ref } from "vue";
 
 import { OFFSET_X } from "../Uitls";
-import type Note from "../models/Note";
 import { appStore } from "../store/App";
-import { Coordinates } from "../models/Layout";
 import Arrow from "../models/Arrow";
+import type Note from "../models/Note";
 
 function findNote(evt: MouseEvent): Note | undefined {
 	const mouseX = evt.clientX - OFFSET_X;
@@ -26,15 +25,9 @@ export default function useArrow() {
 	}
 
 	function onMouseUp(evt: MouseEvent): void {
-		const note = findNote(evt);
-		if (note && startNote.value != null) {
-			const startX = startNote.value.coordinates.x + startNote.value.size.width;
-			const startY = startNote.value.coordinates.y + startNote.value.size.height / 2;
-			const start = new Coordinates(startX, startY);
-			const endX = note.coordinates.x;
-			const endY = note.coordinates.y + note.size.height / 2;
-			const end = new Coordinates(endX, endY);
-			const arrow = new Arrow(start, end);
+		const endNote = findNote(evt);
+		if (endNote && startNote.value != null && endNote != startNote.value) {
+			const arrow = new Arrow(startNote.value.id, endNote.id);
 			appStore.addArrow(arrow);
 		}
 		startNote.value = null;

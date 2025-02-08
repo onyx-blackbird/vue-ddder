@@ -1,32 +1,47 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
+import { appStore } from "../store/App";
 import type Arrow from '../models/Arrow';
 
 interface Props {
 	arrow: Arrow,
 }
-defineProps<Props>();
+const props = defineProps<Props>();
+const startNote = appStore.findNote(props.arrow.startNoteId);
+const endNote = appStore.findNote(props.arrow.endNoteId);
+
+const style = computed(() => {
+	const startX = startNote!.coordinates.x + startNote!.size.width;
+	const startY = startNote!.coordinates.y + startNote!.size.height / 2;
+	const endX = endNote!.coordinates.x;
+	const endY = endNote!.coordinates.y + endNote!.size.height / 2;
+	return {
+		'--ax': startX,
+		'--ay': startY,
+		'--bx': endX,
+		'--by': endY,
+	};
+});
 </script>
 
 <template>
-	<div class="arrow" :style="arrow.style"></div>
+	<div class="arrow" :style="style"></div>
 </template>
 
 <style>
 .arrow {
-	position: absolute;
-	height: 0;
-	border-bottom: 5px solid #000000;
-}
+	--t: 5px;  /* tail size */
+	--h: 10px; /* head size */
 
-.arrow::after {	
-	content: '';
-	width: 0; 
-	height: 0; 
-	border-top: 10px solid transparent;
-	border-bottom: 10px solid transparent;
-	border-left: 20px solid #000000;
 	position: absolute;
-	right: -10px;
-	top: -8px;
+	transform-origin: left 50%;
+	left: calc(var(--ax) * 1px);
+	top: calc(var(--ay) * 1px);
+	height: var(--h);
+	width: calc(hypot(calc(var(--by) - var(--ay)), calc(var(--bx) - var(--ax))) * 1px);
+	rotate: atan2(calc(var(--by) - var(--ay)), calc(var(--bx) - var(--ax)));
+	clip-path: polygon(0 calc(50% - var(--t)/2),calc(100% - var(--h)) calc(50% - var(--t)/2),calc(100% - var(--h)) 0,100% 50%,calc(100% - var(--h)) 100%,calc(100% - var(--h)) calc(50% + var(--t)/2),0 calc(50% + var(--t)/2));
+	background: #000;
 }
 </style>

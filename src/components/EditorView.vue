@@ -30,15 +30,12 @@ const { fileContents, fileMessage, onLoadFile, downloadAsJson } = useFile();
 const { onNewNoteDragStart, onNewNoteDrop } = useNote();
 
 function onExport() {
-	const jsonNotes = appStore.getState().notes.map(note => note.toJsonObject());
-	downloadAsJson(fileName.value, JSON.stringify(jsonNotes));
+	downloadAsJson(fileName.value, JSON.stringify(appStore.export()));
 }
 
 function onImport() {
 	if (fileContents.value) {
-		appStore.clear();
-		const importNotes: Array<Note> = JSON.parse(fileContents.value);
-		importNotes.forEach(note => appStore.addNote(Note.fromJsonObject(note)));
+		appStore.import(JSON.parse(fileContents.value));
 	}
 }
 
@@ -123,10 +120,6 @@ form.options {
 	border: 1px solid #333333;
 	padding: 0.5em;
 	margin-bottom: 1em;
-}
-label {
-	display: inline-block;
-    width: 100px;
 }
 input {
 	width: 100px;

@@ -7,12 +7,12 @@ import { createVfm } from 'vue-final-modal';
 import VueDragscroll from "vue-dragscroll";
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { faCircleQuestion, faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { faAnglesLeft, faAnglesRight } from '@fortawesome/free-solid-svg-icons';
 
-const vfm = createVfm();
-library.add(faPenToSquare, faTrashCan);
+library.add(faAnglesLeft, faAnglesRight, faCircleQuestion, faPenToSquare, faTrashCan);
 
 createApp(App)
-	.use(vfm)
+	.use(createVfm())
 	.use(VueDragscroll)
 	.mount('#app');

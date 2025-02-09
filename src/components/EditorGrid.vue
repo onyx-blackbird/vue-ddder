@@ -22,6 +22,7 @@ const gridStyle = computed(() => {
 		height: appStore.getState().gridSize.height + 'px',
 	}
 });
+const arrowColor = computed(() => appStore.getState().arrowColor);
 
 const { onDragNoteStart, onDropNote } = useNote();
 const { onMouseDown, onMouseUp } = useArrow();
@@ -112,5 +113,15 @@ const { currentNote, currentTitle, currentDescription, showEditModal, showDelete
 .note-modal-content textarea {
 	width: 200px;
 	height: 100px;
+}
+
+.arrow {
+	--t: 5px;  /* tail size */
+	--h: 10px; /* head size */
+
+	position: absolute;
+	transform-origin: left 50%;
+	height: var(--h);
+	background: v-bind(arrowColor);
 }
 </style>

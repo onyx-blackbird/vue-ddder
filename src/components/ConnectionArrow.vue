@@ -31,17 +31,10 @@ const style = computed(() => {
 
 <style>
 .arrow {
-	--t: 5px;  /* tail size */
-	--h: 10px; /* head size */
-
-	position: absolute;
-	transform-origin: left 50%;
 	left: calc(var(--ax) * 1px);
 	top: calc(var(--ay) * 1px);
-	height: var(--h);
 	width: calc(hypot(calc(var(--by) - var(--ay)), calc(var(--bx) - var(--ax))) * 1px);
 	rotate: atan2(calc(var(--by) - var(--ay)), calc(var(--bx) - var(--ax)));
 	clip-path: polygon(0 calc(50% - var(--t)/2),calc(100% - var(--h)) calc(50% - var(--t)/2),calc(100% - var(--h)) 0,100% 50%,calc(100% - var(--h)) 100%,calc(100% - var(--h)) calc(50% + var(--t)/2),0 calc(50% + var(--t)/2));
-	background: #000;
 }
 </style>

@@ -2,15 +2,20 @@ import Arrow from "../models/Arrow";
 import Note from "../models/Note";
 import { Size } from "../models/Layout";
 import { Store } from "./Store";
+import type { height } from "@fortawesome/free-regular-svg-icons/faAddressBook";
 
 interface AppState extends Object {
 	snap: boolean;
+	arrowColor: string;
 	gridSize: Size;
 	notes: Array<Note>;
 	arrows: Array<Arrow>;
 }
 
 interface JsonModel {
+	gridSize: any,
+	snap: boolean,
+	arrowColor: string,
 	notes: Array<any>;
 	arrows: Array<any>;
 }
@@ -27,6 +32,7 @@ class AppStore extends Store<AppState> {
 	constructor() {
 		super({
 			snap: true,
+			arrowColor: '#000000',
 			gridSize: DEFAULT_SIZE,
 			notes: new Array<Note>(),
 			arrows: new Array<Arrow>(),
@@ -35,6 +41,10 @@ class AppStore extends Store<AppState> {
 
 	public setSnap(snap: boolean) {
 		this.state.snap = snap;
+	}
+
+	public setArrowColor(arrowColor: string) {
+		this.state.arrowColor = arrowColor;
 	}
 
 	public setGridSize(width: number, height: number) {
@@ -74,6 +84,12 @@ class AppStore extends Store<AppState> {
 		const notes = this.state.notes.map(note => note.toJsonObject());
 		const arrows = this.state.arrows.map(arrow => arrow.toJsonObject());
 		return {
+			gridSize: {
+				width: this.state.gridSize.width,
+				height: this.state.gridSize.height
+			},
+			snap: this.state.snap,
+			arrowColor: this.state.arrowColor,
 			notes,
 			arrows,
 		};
@@ -82,6 +98,9 @@ class AppStore extends Store<AppState> {
 	public import(jsonModel: JsonModel): void {
 		this.state.notes.splice(0);
 		this.state.arrows.splice(0);
+		this.setGridSize(jsonModel.gridSize.width, jsonModel.gridSize.height);
+		this.setSnap(jsonModel.snap);
+		this.setArrowColor(jsonModel.arrowColor);
 		jsonModel.notes.forEach(note => this.addNote(Note.fromJsonObject(note)));
 		jsonModel.arrows.forEach(arrow => this.addArrow(Arrow.fromJsonObject(arrow)));
 	}

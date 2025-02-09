@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { appStore } from "../store/App";
+import { eventStormStore } from "../store/EventStorm";
 import type Arrow from '../models/Arrow';
 
 interface Props {
 	arrow: Arrow,
 }
 const props = defineProps<Props>();
-const startNote = appStore.findNote(props.arrow.startNoteId);
-const endNote = appStore.findNote(props.arrow.endNoteId);
+const startNote = eventStormStore.findNote(props.arrow.startNoteId);
+const endNote = eventStormStore.findNote(props.arrow.endNoteId);
 
 const style = computed(() => {
 	const startX = startNote!.coordinates.x + startNote!.size.width;

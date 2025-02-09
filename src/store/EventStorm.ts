@@ -2,9 +2,8 @@ import Arrow from "../models/Arrow";
 import Note from "../models/Note";
 import { Size } from "../models/Layout";
 import { Store } from "./Store";
-import type { height } from "@fortawesome/free-regular-svg-icons/faAddressBook";
 
-interface AppState extends Object {
+interface EventStormState extends Object {
 	snap: boolean;
 	arrowColor: string;
 	gridSize: Size;
@@ -27,7 +26,7 @@ interface GlossaryModel {
 
 const DEFAULT_SIZE = new Size(3000, 2000);
 
-class AppStore extends Store<AppState> {
+class EventStormStore extends Store<EventStormState> {
 
 	constructor() {
 		super({
@@ -116,4 +115,4 @@ class AppStore extends Store<AppState> {
 
 }
 
-export const appStore: AppStore = new AppStore();
+export const eventStormStore: EventStormStore = new EventStormStore();

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import HelpModal from './HelpModal.vue';
 
 import useFile from '../composables/useFile';
-import { appStore } from '../store/App';
+import { eventStormStore } from '../store/EventStorm';
 
 const JSON_FORMAT = 'json';
 const MD_FORMAT = 'md';
@@ -20,20 +20,20 @@ const collapsed = ref(false);
 const showHelpModal = ref(false);
 
 const snap = computed({
-	get: () => appStore.getState().snap,
-	set: (newValue: boolean) => appStore.setSnap(newValue)
+	get: () => eventStormStore.getState().snap,
+	set: (newValue: boolean) => eventStormStore.setSnap(newValue)
 });
 const arrowColor = computed({
-	get: () => appStore.getState().arrowColor,
-	set: (newValue: string) => appStore.setArrowColor(newValue)
+	get: () => eventStormStore.getState().arrowColor,
+	set: (newValue: string) => eventStormStore.setArrowColor(newValue)
 });
 const gridWidth = computed({
-	get: () => appStore.getState().gridSize.width,
-	set: (newValue: number) => appStore.setGridSize(newValue, appStore.getState().gridSize.height)
+	get: () => eventStormStore.getState().gridSize.width,
+	set: (newValue: number) => eventStormStore.setGridSize(newValue, eventStormStore.getState().gridSize.height)
 });
 const gridHeight = computed({
-	get: () => appStore.getState().gridSize.height,
-	set: (newValue: number) => appStore.setGridSize(appStore.getState().gridSize.width, newValue)
+	get: () => eventStormStore.getState().gridSize.height,
+	set: (newValue: number) => eventStormStore.setGridSize(eventStormStore.getState().gridSize.width, newValue)
 });
 const notesFileName = ref('notes.json');
 const glossaryFileName = ref('glossary.json');
@@ -44,18 +44,18 @@ watch(glossaryFormat, (newFormat, oldFormat) => {
 });
 
 function onExport() {
-	downloadAsJson(notesFileName.value, JSON.stringify(appStore.export()));
+	downloadAsJson(notesFileName.value, JSON.stringify(eventStormStore.export()));
 }
 
 function onImport() {
 	if (fileContents.value) {
-		appStore.import(JSON.parse(fileContents.value));
+		eventStormStore.import(JSON.parse(fileContents.value));
 	}
 }
 
 function onExportGlossary() {
 	const fileName = ensureExtension(glossaryFileName.value, glossaryFormat.value);
-	const glossary = appStore.exportGlossary();
+	const glossary = eventStormStore.exportGlossary();
 	if (glossaryFormat.value === JSON_FORMAT) {
 		download(fileName, JSON.stringify(glossary));
 	} else {

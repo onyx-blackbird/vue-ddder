@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 
 import { GRID_SIZE } from '../Uitls';
-import { appStore } from '../store/App';
+import { eventStormStore } from '../store/EventStorm';
 import useArrow from '../composables/useArrow';
 import useNoteModal from '../composables/useNoteModal';
 import useNote from '../composables/useNote';
@@ -12,17 +12,17 @@ import { VueFinalModal } from 'vue-final-modal';
 import StickyNote from './StickyNote.vue';
 import ConnectionArrow from './ConnectionArrow.vue';
 
-const notes = computed(() => appStore.getState().notes);
-const arrows = computed(() => appStore.getState().arrows);
+const notes = computed(() => eventStormStore.getState().notes);
+const arrows = computed(() => eventStormStore.getState().arrows);
 
 const backgroundSize = GRID_SIZE + 'px ' + GRID_SIZE + 'px';
 const gridStyle = computed(() => {
 	return {
-		width: appStore.getState().gridSize.width + 'px',
-		height: appStore.getState().gridSize.height + 'px',
+		width: eventStormStore.getState().gridSize.width + 'px',
+		height: eventStormStore.getState().gridSize.height + 'px',
 	}
 });
-const arrowColor = computed(() => appStore.getState().arrowColor);
+const arrowColor = computed(() => eventStormStore.getState().arrowColor);
 
 const { onDragNoteStart, onDropNote } = useNote();
 const { onMouseDown, onMouseUp } = useArrow();

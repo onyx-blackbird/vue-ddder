@@ -4,7 +4,7 @@ import { vResizeObserver } from '@vueuse/components';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { debounce, GRID_SIZE } from '../Uitls';
-import { appStore } from '../store/App';
+import { eventStormStore } from '../store/EventStorm';
 import Note, { CHANGE_NOTE, DELETE_NOTE } from '../models/Note';
 
 interface Props {
@@ -36,7 +36,7 @@ const onResizeObserver = debounce(
 	(entries: any) => {
 		const [entry] = entries;
 		let { width, height } = entry.contentRect;
-		if (appStore.getState().snap) {
+		if (eventStormStore.getState().snap) {
 			width = Math.ceil(width / GRID_SIZE) * GRID_SIZE;
 			height = Math.ceil(height / GRID_SIZE) * GRID_SIZE;
 		}

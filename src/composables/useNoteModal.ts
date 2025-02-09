@@ -1,7 +1,7 @@
 import { ref, type Ref } from "vue";
 
 import type Note from "../models/Note";
-import { appStore } from "../store/App";
+import { eventStormStore } from "../store/EventStorm";
 
 export default function useNoteModal() {
 	const showEditModal = ref(false);
@@ -35,7 +35,7 @@ export default function useNoteModal() {
 	
 	function deleteNote(): void {
 		if (currentNote.value != null) {
-			appStore.deleteNote(currentNote.value);
+			eventStormStore.deleteNote(currentNote.value);
 		}
 		currentNote.value = null;
 		showDeleteModal.value = false;

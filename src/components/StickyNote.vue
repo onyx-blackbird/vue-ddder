@@ -52,12 +52,12 @@ const onResizeObserver = debounce(
 		:class="note.type"
 		@dblclick="onDblCLick">
 		<div class="edit" v-if="!readonly">
-			<font-awesome-icon :icon="['far', 'pen-to-square']"
-				@click="emit(CHANGE_NOTE)">
-			</font-awesome-icon>
-			<font-awesome-icon :icon="['far', 'trash-can']"
-				@click="emit(DELETE_NOTE)">
-			</font-awesome-icon>
+			<font-awesome-icon
+				:icon="['far', 'pen-to-square']"
+				@click="emit(CHANGE_NOTE)"/>
+			<font-awesome-icon
+				:icon="['far', 'trash-can']"
+				@click="emit(DELETE_NOTE)"/>
 		</div>
 		<span v-show="!editMode">{{note.title}}</span>
 		<input type="text" class="editTitle"

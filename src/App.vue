@@ -4,6 +4,6 @@ import EditorView from './components/EditorView.vue'
 </script>
 
 <template>
-	<editor-view></editor-view>
-	<modals-container></modals-container>
+	<editor-view/>
+	<modals-container/>
 </template>

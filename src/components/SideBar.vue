@@ -88,12 +88,10 @@ function onShowHelpModal() {
 		<div class="icons">
 			<font-awesome-icon class="collapse" title="collapse"
 				:icon="['fas', 'angles-right']"
-				@click="onToggleCollapse">
-			</font-awesome-icon>
+				@click="onToggleCollapse"/>
 			<font-awesome-icon class="help" title="help"
 				:icon="['far', 'circle-question']"
-				@click="onShowHelpModal">
-			</font-awesome-icon>
+				@click="onShowHelpModal"/>
 		</div>
 		<h2>Options</h2>
 		<form class="options" @submit.prevent>
@@ -149,12 +147,11 @@ function onShowHelpModal() {
 		<div class="icons">
 			<font-awesome-icon class="collapse" title="expand"
 				:icon="['fas', 'angles-left']"
-				@click="onToggleCollapse">
-			</font-awesome-icon>
+				@click="onToggleCollapse"/>
 		</div>
 		<h2 class="vertical">Options and Tools</h2>
 	</div>
-	<help-modal v-model="showHelpModal"></help-modal>
+	<help-modal v-model="showHelpModal"/>
 </template>
 
 <style>

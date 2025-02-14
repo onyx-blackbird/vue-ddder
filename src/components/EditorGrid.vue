@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 import { GRID_SIZE } from '../Uitls';
 import { eventStormStore } from '../store/EventStorm';
 import useArrow from '../composables/useArrow';
 import useNoteModal from '../composables/useNoteModal';
 import useNote from '../composables/useNote';
+import useZoom from '../composables/useZoom';
 
 import { VueFinalModal } from 'vue-final-modal';
 
@@ -24,9 +27,11 @@ const gridStyle = computed(() => {
 });
 const arrowColor = computed(() => eventStormStore.getState().arrowColor);
 
+const { zoomStyle, onWheel, onDecrease, onIncrease, onReset } = useZoom();
 const { onDragNoteStart, onDropNote } = useNote();
 const { onMouseDown, onMouseUp } = useArrow();
 const { currentNote, currentTitle, currentDescription, showEditModal, showDeleteModal, onChangeNote, onSaveModal, onDeleteNote, deleteNote } = useNoteModal();
+
 </script>
 
 <template>
@@ -34,7 +39,8 @@ const { currentNote, currentTitle, currentDescription, showEditModal, showDelete
 		:style="gridStyle"
 		@contextmenu.prevent
 		@dragover.prevent
-		@drop="onDropNote">
+		@drop="onDropNote"
+		@wheel="onWheel">
 		<sticky-note v-for="(note) in notes"
 			class="resizable"
 			:key="note.id"
@@ -49,8 +55,7 @@ const { currentNote, currentTitle, currentDescription, showEditModal, showDelete
 		</sticky-note>
 		<connection-arrow v-for="(arrow) in arrows"
 			:key="arrow.id"
-			:arrow="arrow">
-		</connection-arrow>
+			:arrow="arrow"/>
 		<vue-final-modal v-model="showEditModal"
 			class="note-modal"
 			content-class="note-modal-content"
@@ -80,6 +85,13 @@ const { currentNote, currentTitle, currentDescription, showEditModal, showDelete
 				<button @click="deleteNote">Confirm</button>
 			</form>
 		</vue-final-modal>
+		<teleport to="body">
+			<div class="zoom">
+				<font-awesome-icon :icon="['fas', 'minus']" @click="onDecrease"/>
+				<span @click="onReset">{{ zoomStyle }}</span>
+				<font-awesome-icon :icon="['fas', 'plus']" @click="onIncrease"/>
+			</div>
+		</teleport>
 	</div>
 </template>
 
@@ -91,7 +103,26 @@ const { currentNote, currentTitle, currentDescription, showEditModal, showDelete
     linear-gradient(to bottom, #dddddd 1px, transparent 1px);
   overflow: scroll;
   position: relative;
+  zoom: v-bind(zoomStyle);
 }
+
+.zoom {
+	position: fixed;
+	top: 10px;
+	left: 200px;
+	padding: 2px 5px;
+	background-color: #ffffff80;
+	border: 1px solid #33333380;
+}
+.zoom span {
+	cursor: pointer;
+	user-select: none;
+}
+.zoom svg {
+	cursor: pointer;
+	padding: 0 5px;
+}
+
 .note-modal {
 	display: flex;
 	justify-content: center;

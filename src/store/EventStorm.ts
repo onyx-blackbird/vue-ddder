@@ -5,6 +5,7 @@ import { Store } from "./Store";
 
 interface EventStormState extends Object {
 	snap: boolean;
+	zoom: number;
 	arrowColor: string;
 	gridSize: Size;
 	notes: Array<Note>;
@@ -24,13 +25,14 @@ interface GlossaryModel {
 	description: string,
 }
 
-const DEFAULT_SIZE = new Size(3000, 2000);
+const DEFAULT_SIZE = new Size(10000, 6000);
 
 class EventStormStore extends Store<EventStormState> {
 
 	constructor() {
 		super({
 			snap: true,
+			zoom: 100,
 			arrowColor: '#000000',
 			gridSize: DEFAULT_SIZE,
 			notes: new Array<Note>(),
@@ -40,6 +42,14 @@ class EventStormStore extends Store<EventStormState> {
 
 	public setSnap(snap: boolean) {
 		this.state.snap = snap;
+	}
+
+	public setZoom(zoom: number) {
+		this.state.zoom = zoom;
+	}
+
+	public getZoomFactor(): number {
+		return this.state.zoom / 100;
 	}
 
 	public setArrowColor(arrowColor: string) {

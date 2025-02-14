@@ -5,7 +5,7 @@ const IDS = new Array<string>();
 
 export const OFFSET_X = 200;
 export const GRID_SIZE = 20;
-export const TRANSFER_TYPE = 'applicaiton/json';
+export const TRANSFER_FORMAT = 'application/json';
 export const COPY_EFFECT = 'copy';
 export const MOVE_EFFECT = 'move';
 

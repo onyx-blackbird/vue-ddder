@@ -28,8 +28,7 @@ onMounted(() => {
 				:note="type"
 				:readonly="true"
 				:style="type.style"
-				@dragstart="onNewNoteDragStart($event, type)">
-			</sticky-note>
+				@dragstart="onNewNoteDragStart($event, type)"/>
 			<div class="scroll up" v-show="showScrollUp"
 				@click="scrollToTop">
 				<font-awesome-icon :icon="['fas', 'angles-up']"/>
@@ -42,8 +41,7 @@ onMounted(() => {
 		<div class="center" v-dragscroll:nochilddrag>
 			<editor-grid
 				@dragover.prevent
-				@drop="onNewNoteDrop">
-			</editor-grid>
+				@drop="onNewNoteDrop"/>
 		</div>
 		<aside class="right">
 			<side-bar/>

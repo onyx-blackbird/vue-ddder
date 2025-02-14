@@ -3,10 +3,11 @@ import { computed, ref, watch } from 'vue';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import HelpModal from './HelpModal.vue';
-
 import useFile from '../composables/useFile';
 import { eventStormStore } from '../store/EventStorm';
+import { GRID_SIZE } from '../Uitls';
+
+import HelpModal from './HelpModal.vue';
 
 const JSON_FORMAT = 'json';
 const MD_FORMAT = 'md';
@@ -28,12 +29,12 @@ const arrowColor = computed({
 	set: (newValue: string) => eventStormStore.setArrowColor(newValue)
 });
 const gridWidth = computed({
-	get: () => eventStormStore.getState().gridSize.width,
-	set: (newValue: number) => eventStormStore.setGridSize(newValue, eventStormStore.getState().gridSize.height)
+	get: () => eventStormStore.getState().gridSize.width / GRID_SIZE,
+	set: (newValue: number) => eventStormStore.setGridSize(newValue * GRID_SIZE, eventStormStore.getState().gridSize.height)
 });
 const gridHeight = computed({
-	get: () => eventStormStore.getState().gridSize.height,
-	set: (newValue: number) => eventStormStore.setGridSize(eventStormStore.getState().gridSize.width, newValue)
+	get: () => eventStormStore.getState().gridSize.height / GRID_SIZE,
+	set: (newValue: number) => eventStormStore.setGridSize(eventStormStore.getState().gridSize.width, newValue * GRID_SIZE)
 });
 const notesFileName = ref('notes.json');
 const glossaryFileName = ref('glossary.json');
@@ -97,11 +98,11 @@ function onShowHelpModal() {
 		<form class="options" @submit.prevent>
 			<div>
 				<label for="gridWidth">Grid Width </label>
-				<input type="number" id="gridWidth" min="1000" max="50000" step="100" v-model="gridWidth">
+				<input type="number" id="gridWidth" min="500" max="50000" step="100" v-model="gridWidth">
 			</div>
 			<div>
 				<label for="gridHeight">Grid Height </label>
-				<input type="number" id="gridHeight" min="1000" max="10000" step="100" v-model="gridHeight">
+				<input type="number" id="gridHeight" min="300" max="25000" step="100" v-model="gridHeight">
 			</div>
 			<div>
 				<label for="snap">Snap to grid</label>

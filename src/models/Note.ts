@@ -1,4 +1,4 @@
-import { generateUniqueId } from "../Uitls";
+import { v6 as uuidv6 } from 'uuid';
 import { Coordinates, Size } from "./Layout";
 
 export const SIZE = 140;
@@ -16,7 +16,7 @@ export default class Note {
 	private _size: Size;
 
 	constructor(type: string, title: string, x: number, y: number) {
-		this._id = generateUniqueId();
+		this._id = uuidv6();
 		this._title = title;
 		this._type = type;
 		this._coordinates = new Coordinates(x, y);

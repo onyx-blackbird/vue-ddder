@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import './style.css';
 import 'vue-final-modal/style.css';
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 import App from './App.vue';
 
 import { createVfm } from 'vue-final-modal';

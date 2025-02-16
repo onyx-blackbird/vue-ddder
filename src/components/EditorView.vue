@@ -4,12 +4,12 @@ import { onMounted } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import useNote from '../composables/useNote';
+import useScroll from '../composables/useScroll';
 import { NOTE_TYPES } from '../models/Note';
 
 import EditorGrid from './EditorGrid.vue'
-import SideBar from './SideBar.vue'
+import SideBar from './sidebar/SideBar.vue'
 import StickyNote from './StickyNote.vue'
-import useScroll from '../composables/useScroll';
 
 const { onNewNoteDragStart, onNewNoteDrop } = useNote();
 const { showScrollUp, showScrollDown, onScroll, scrollToTop, scrollToBottom } = useScroll('aside');

@@ -10,7 +10,7 @@ This app is meant to help to digitize event storming outcomes to support develop
 ## Features
 - With the initial version you can place notes on a grid.
 - You can move and resize the notes.
-- You can draw arrows between two notes (only from left to right).
+- You can draw arrows between two notes.
 - This "layout" can be exported as JSON and imported again, as there is currently no persistence.
 - You can export a glossary based on the notes title and description as either JSON or Markdown.
 

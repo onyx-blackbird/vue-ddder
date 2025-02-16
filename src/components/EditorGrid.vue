@@ -51,9 +51,7 @@ const { currentArrowInfo, showDeleteArrowModal, onDeleteArrow, deleteArrow } = u
 			@delete-note="onDeleteNote(note)"
 			@dragstart="onDragNoteStart($event, note)"
 			@mousedown="onMouseDown"
-			@mouseup="onMouseUp">
-			{{ note.title }}
-		</sticky-note>
+			@mouseup="onMouseUp"/>
 		<connection-arrow v-for="(arrow) in arrows"
 			:key="arrow.id"
 			:arrow="arrow"

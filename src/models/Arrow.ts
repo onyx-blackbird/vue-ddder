@@ -1,4 +1,4 @@
-import { generateUniqueId } from "../Uitls";
+import { v6 as uuidv6 } from 'uuid';
 
 export default class Arrow {
 
@@ -7,7 +7,7 @@ export default class Arrow {
 	private _endNoteId: string;
 
 	constructor(startNoteId: string, endNoteId: string) {
-		this._id = generateUniqueId();
+		this._id = uuidv6();
 		this._startNoteId = startNoteId;
 		this._endNoteId = endNoteId;
 	}

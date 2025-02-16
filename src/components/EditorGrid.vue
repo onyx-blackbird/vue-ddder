@@ -14,6 +14,7 @@ import { VueFinalModal } from 'vue-final-modal';
 
 import StickyNote from './StickyNote.vue';
 import ConnectionArrow from './ConnectionArrow.vue';
+import useArrowModal from '../composables/useArrowModal';
 
 const notes = computed(() => eventStormStore.getState().notes);
 const arrows = computed(() => eventStormStore.getState().arrows);
@@ -30,8 +31,8 @@ const arrowColor = computed(() => eventStormStore.getState().arrowColor);
 const { zoomStyle, onWheel, onDecrease, onIncrease, onReset } = useZoom();
 const { onDragNoteStart, onDropNote } = useNote();
 const { onMouseDown, onMouseUp } = useArrow();
-const { currentNote, currentTitle, currentDescription, showEditModal, showDeleteModal, onChangeNote, onSaveModal, onDeleteNote, deleteNote } = useNoteModal();
-
+const { currentNote, currentTitle, currentDescription, showEditNoteModal, showDeleteNoteModal, onChangeNote, onSaveNoteModal, onDeleteNote, deleteNote } = useNoteModal();
+const { currentArrowInfo, showDeleteArrowModal, onDeleteArrow, deleteArrow } = useArrowModal();
 </script>
 
 <template>
@@ -55,8 +56,9 @@ const { currentNote, currentTitle, currentDescription, showEditModal, showDelete
 		</sticky-note>
 		<connection-arrow v-for="(arrow) in arrows"
 			:key="arrow.id"
-			:arrow="arrow"/>
-		<vue-final-modal v-model="showEditModal"
+			:arrow="arrow"
+			@contextmenu="onDeleteArrow(arrow)"/>
+		<vue-final-modal v-model="showEditNoteModal"
 			class="note-modal"
 			content-class="note-modal-content"
 			overlay-transition="vfm-fade"
@@ -70,10 +72,11 @@ const { currentNote, currentTitle, currentDescription, showEditModal, showDelete
 					<label for="description">Description </label>
 					<textarea id="description" v-model="currentDescription"></textarea>
 				</p>
-				<button @click="onSaveModal">Save</button>
+				<button @click="showEditNoteModal = false">Cancel</button>
+				<button class="primary" @click="onSaveNoteModal">Save</button>
 			</form>
 		</vue-final-modal>
-		<vue-final-modal v-model="showDeleteModal"
+		<vue-final-modal v-model="showDeleteNoteModal"
 			class="note-modal"
 			content-class="note-modal-content"
 			overlay-transition="vfm-fade"
@@ -82,7 +85,21 @@ const { currentNote, currentTitle, currentDescription, showEditModal, showDelete
 				<p>
 					Do you really want to delete "{{currentNote!.title}}""
 				</p>
-				<button @click="deleteNote">Confirm</button>
+				<button @click="showDeleteNoteModal = false">Cancel</button>
+				<button class="primary" @click="deleteNote">Confirm</button>
+			</form>
+		</vue-final-modal>
+		<vue-final-modal v-model="showDeleteArrowModal"
+			class="note-modal"
+			content-class="note-modal-content"
+			overlay-transition="vfm-fade"
+			content-transition="vfm-fade">
+			<form @submit.prevent>
+				<p>
+					Do you really want to delete the arrow between {{ currentArrowInfo }}
+				</p>
+				<button @click="showDeleteArrowModal = false">Cancel</button>
+				<button class="primary" @click="deleteArrow">Confirm</button>
 			</form>
 		</vue-final-modal>
 		<teleport to="body">

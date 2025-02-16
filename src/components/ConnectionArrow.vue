@@ -12,16 +12,32 @@ const startNote = eventStormStore.findNote(props.arrow.startNoteId);
 const endNote = eventStormStore.findNote(props.arrow.endNoteId);
 
 const style = computed(() => {
-	const startX = startNote!.coordinates.x + startNote!.size.width;
-	const startY = startNote!.coordinates.y + startNote!.size.height / 2;
-	const endX = endNote!.coordinates.x;
-	const endY = endNote!.coordinates.y + endNote!.size.height / 2;
-	return {
-		'--ax': startX,
-		'--ay': startY,
-		'--bx': endX,
-		'--by': endY,
-	};
+	if (startNote && endNote) {
+		let startX = startNote.coordinates.x + startNote.size.width;
+		let startY = startNote.coordinates.y + startNote.size.height / 2;
+		let endX = endNote.coordinates.x;
+		let endY = endNote.coordinates.y + endNote.size.height / 2;
+		if (startNote.coordinates.x > endNote.coordinates.x + endNote.size.width) {
+			startX = startNote.coordinates.x;
+			endX = endNote.coordinates.x + endNote.size.width;
+		} else if (startNote.coordinates.x + startNote.size.width > endNote.coordinates.x) {
+			startX = startNote.coordinates.x + startNote.size.width / 2;
+			endX = endNote.coordinates.x + endNote.size.width / 2;
+			if (startNote.coordinates.y + startNote.size.height > endNote.coordinates.y) {
+				startY = startNote.coordinates.y;
+				endY = endNote.coordinates.y + endNote.size.height;
+			} else {
+				startY = startNote.coordinates.y + startNote.size.height;
+				endY = endNote.coordinates.y;
+			}
+		}
+		return {
+			'--ax': startX,
+			'--ay': startY,
+			'--bx': endX,
+			'--by': endY,
+		};
+	}
 });
 </script>
 

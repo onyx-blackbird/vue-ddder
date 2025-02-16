@@ -71,6 +71,10 @@ class EventStormStore extends Store<EventStormState> {
 			this.state.arrows.splice(arrowIndex, 1);
 		}
 	}
+
+	public findArrow(arrowId: string): Arrow | undefined {
+		return this.state.arrows.find(arrow => arrow.id === arrowId);
+	}
 	
 	public addNote(note: Note): void {
 		this.state.notes.push(note);

@@ -50,6 +50,9 @@ button {
 	background-color: #ffffff;
 	cursor: pointer;
 }
+button.primary {
+    float: right;
+}
 button:hover {
 	background-color: #dddddd;
 }

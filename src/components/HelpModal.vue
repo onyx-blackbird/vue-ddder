@@ -11,29 +11,31 @@ const model = defineModel({required: true, default: false});
 		content-transition="vfm-fade">
 		<h2>Help</h2>
 		<h3>Options</h3>
-		<p>
-			You can collapse and expand the sidebar by pressing the chevron icon.
-			The size of the grid can be adjusted with the input fields.
-			Per default the notes snap to the grid, this can be disabled by unchecking the corresponding checkbox.
-			The color of the arrows can be changed with a color picker.
-		</p>
-		<h3>Grid</h3>
-		<p>
-			The grid can be moved with left and right click drag outside of a note.
-			Use the mousewheel or the buttons on the upper left corner to change the zoom.
-		</p>
+		<ul>
+			<li>You can collapse and expand the sidebar by pressing the chevron icon.</li>
+			<li>The size of the canvas can be adjusted with the input fields; the values represent the number of squares on the grid pattern.</li>
+			<li>Per default the notes snap to the grid, this can be disabled by unchecking the corresponding checkbox.</li>
+			<li>The color of the arrows can be changed with a color picker.</li>
+		</ul>
+		<h3>Canvas</h3>
+		<ul>
+			<li>The canvas can be moved with left and right click drag outside of a note and arrow.</li>
+			<li>Use the mousewheel or the buttons on the upper left corner to change the zoom level.</li>
+		</ul>
 		<h3>Notes</h3>
-		<p>
-			Drag notes from the left side onto the grid in the middle. Double click on the title to edit it or use the edit icon to also provide a description.
-			You can drag the notes around once placed and with the handle on the lower right corner the size can be adjusted.
-			Known Bug: Moving notes with any zoom level other than 100% is not working as intended.
-		</p>
+		<ul>
+			<li>Drag notes from the left side onto the grid in the middle. Double click on the title to edit it or use the edit icon to also provide a description.</li>
+			<li>You can drag the notes around once placed and with the handle on the lower right corner the size can be adjusted.</li>
+			<li>To delete a note click the trash can icon.</li>
+		</ul>
 		<h3>Arrows</h3>
-		<p>
-			Right click and hold on the source note and then release the right mouse button on the target note to draw an arrow between them. 
-			This is currently limitted for left to right arrows.
-			Arrows currently will only be deleted when either the start or the end note is deleted.
-		</p>
+		<ul>
+			<li>Right click and hold on the source note and then release the right mouse button on the target note to draw an arrow between them.</li>
+			<li>To delete an arrow right click on it.</li>
+		</ul>
+		<form @submit.prevent>
+			<button @click="model = false">Close</button>
+		</form>
 	</vue-final-modal>
 </template>
 

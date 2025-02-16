@@ -46,8 +46,8 @@ export default function useNote() {
 			evt.dataTransfer.effectAllowed = MOVE_EFFECT;
 			const dragData: MoveData = {
 				noteId: note.id,
-				x: evt.pageX - evt.target.offsetLeft,
-				y: evt.pageY - evt.target.offsetTop,
+				x: evt.pageX - evt.target.offsetLeft * eventStormStore.getZoomFactor(),
+				y: evt.pageY - evt.target.offsetTop * eventStormStore.getZoomFactor(),
 			};
 			evt.dataTransfer.setData(TRANSFER_FORMAT, JSON.stringify(dragData));
 		}
@@ -56,8 +56,13 @@ export default function useNote() {
 	function onDropNote(evt: DragEvent): void {
 		if (evt.dataTransfer && evt.dataTransfer.effectAllowed === MOVE_EFFECT) {
 			const moveData: MoveData = JSON.parse(evt.dataTransfer.getData(TRANSFER_FORMAT));
-			let x = Math.max(0, evt.pageX - moveData.x);
-			let y = Math.max(0, evt.pageY - moveData.y);
+			let x = Math.max(0, evt.pageX - moveData.x) / eventStormStore.getZoomFactor();
+			let y = Math.max(0, evt.pageY - moveData.y) / eventStormStore.getZoomFactor();
+			console.dir({
+				moveData,
+				pageX: evt.pageX,
+				pageY: evt.pageY,
+			});
 			if (eventStormStore.getState().snap) {
 				x = Math.ceil(x / GRID_SIZE) * GRID_SIZE;
 				y = Math.ceil(y / GRID_SIZE) * GRID_SIZE;

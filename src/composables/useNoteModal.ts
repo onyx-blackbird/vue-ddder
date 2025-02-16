@@ -4,8 +4,8 @@ import type Note from "../models/Note";
 import { eventStormStore } from "../store/EventStorm";
 
 export default function useNoteModal() {
-	const showEditModal = ref(false);
-	const showDeleteModal = ref(false);
+	const showEditNoteModal = ref(false);
+	const showDeleteNoteModal = ref(false);
 	const currentNote: Ref<Note|null> = ref(null);
 	const currentTitle = ref('');
 	const currentDescription = ref('');
@@ -14,10 +14,10 @@ export default function useNoteModal() {
 		currentNote.value = note;
 		currentTitle.value = note.title;
 		currentDescription.value = note.description;
-		showEditModal.value = true;
+		showEditNoteModal.value = true;
 	}
 
-	function onSaveModal() {
+	function onSaveNoteModal() {
 		if (currentNote.value != null) {
 			currentNote.value.title = currentTitle.value;
 			currentNote.value.description = currentDescription.value;
@@ -25,12 +25,12 @@ export default function useNoteModal() {
 		currentNote.value = null;
 		currentTitle.value = '';
 		currentDescription.value = '';
-		showEditModal.value = false;
+		showEditNoteModal.value = false;
 	}
 
 	function onDeleteNote(note: Note) {
 		currentNote.value = note;
-		showDeleteModal.value = true;
+		showDeleteNoteModal.value = true;
 	}
 	
 	function deleteNote(): void {
@@ -38,17 +38,17 @@ export default function useNoteModal() {
 			eventStormStore.deleteNote(currentNote.value);
 		}
 		currentNote.value = null;
-		showDeleteModal.value = false;
+		showDeleteNoteModal.value = false;
 	}
 
 	return {
 		currentNote,
 		currentTitle,
 		currentDescription,
-		showDeleteModal,
-		showEditModal,
+		showDeleteNoteModal,
+		showEditNoteModal,
 		onChangeNote,
-		onSaveModal,
+		onSaveNoteModal,
 		onDeleteNote,
 		deleteNote,
 	};

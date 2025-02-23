@@ -4,9 +4,9 @@ import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import CanvasOptions from './CanvasOptions.vue';
-import HelpModal from './HelpModal.vue';
 import ImportExport from './ImportExport.vue';
 import PrintNotes from './PrintNotes.vue';
+import HelpModal from '../modals/HelpModal.vue';
 
 const EXPANDED = '300px';
 const COLLAPSED = '50px';

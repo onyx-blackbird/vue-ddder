@@ -58,11 +58,6 @@ export default function useNote() {
 			const moveData: MoveData = JSON.parse(evt.dataTransfer.getData(TRANSFER_FORMAT));
 			let x = Math.max(0, evt.pageX - moveData.x) / eventStormStore.getZoomFactor();
 			let y = Math.max(0, evt.pageY - moveData.y) / eventStormStore.getZoomFactor();
-			console.dir({
-				moveData,
-				pageX: evt.pageX,
-				pageY: evt.pageY,
-			});
 			if (eventStormStore.getState().snap) {
 				x = Math.ceil(x / GRID_SIZE) * GRID_SIZE;
 				y = Math.ceil(y / GRID_SIZE) * GRID_SIZE;

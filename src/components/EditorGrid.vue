@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { GRID_SIZE } from '../Uitls';
 import { eventStormStore } from '../store/EventStorm';
+import type Note from '../models/Note';
+import type Arrow from '../models/Arrow';
 import useArrow from '../composables/useArrow';
-import useNoteModal from '../composables/useNoteModal';
 import useNote from '../composables/useNote';
 import useZoom from '../composables/useZoom';
 
-import { VueFinalModal } from 'vue-final-modal';
-
 import StickyNote from './StickyNote.vue';
 import ConnectionArrow from './ConnectionArrow.vue';
-import useArrowModal from '../composables/useArrowModal';
+import EditNote from './modals/EditNote.vue';
+import DeleteNote from './modals/DeleteNote.vue';
+import DeleteArrow from './modals/DeleteArrow.vue';
 
 const notes = computed(() => eventStormStore.getState().notes);
 const arrows = computed(() => eventStormStore.getState().arrows);
@@ -31,8 +32,19 @@ const arrowColor = computed(() => eventStormStore.getState().arrowColor);
 const { zoomStyle, onWheel, onDecrease, onIncrease, onReset } = useZoom();
 const { onDragNoteStart, onDropNote } = useNote();
 const { onMouseDown, onMouseUp } = useArrow();
-const { currentNote, currentTitle, currentDescription, showEditNoteModal, showDeleteNoteModal, onChangeNote, onSaveNoteModal, onDeleteNote, deleteNote } = useNoteModal();
-const { currentArrowInfo, showDeleteArrowModal, onDeleteArrow, deleteArrow } = useArrowModal();
+
+const currentEditNote: Ref<Note|null> = ref(null);
+function onChangeNote(note: Note) {
+	currentEditNote.value = note;
+}
+const currentDeleteNote: Ref<Note|null> = ref(null);
+function onDeleteNote(note: Note) {
+	currentDeleteNote.value = note;
+}
+const currentArrow: Ref<Arrow|null> = ref(null);
+function onDeleteArrow(arrow: Arrow) {
+	currentArrow.value = arrow;
+}
 </script>
 
 <template>
@@ -56,50 +68,9 @@ const { currentArrowInfo, showDeleteArrowModal, onDeleteArrow, deleteArrow } = u
 			:key="arrow.id"
 			:arrow="arrow"
 			@contextmenu="onDeleteArrow(arrow)"/>
-		<vue-final-modal v-model="showEditNoteModal"
-			class="note-modal"
-			content-class="note-modal-content"
-			overlay-transition="vfm-fade"
-			content-transition="vfm-fade">
-			<form @submit.prevent>
-				<p>
-					<label for="title">Title </label>
-					<input type="string" id="title" v-model="currentTitle">
-				</p>
-				<p>
-					<label for="description">Description </label>
-					<textarea id="description" v-model="currentDescription"></textarea>
-				</p>
-				<button @click="showEditNoteModal = false">Cancel</button>
-				<button class="primary" @click="onSaveNoteModal">Save</button>
-			</form>
-		</vue-final-modal>
-		<vue-final-modal v-model="showDeleteNoteModal"
-			class="note-modal"
-			content-class="note-modal-content"
-			overlay-transition="vfm-fade"
-			content-transition="vfm-fade">
-			<form @submit.prevent>
-				<p>
-					Do you really want to delete "{{currentNote!.title}}""
-				</p>
-				<button @click="showDeleteNoteModal = false">Cancel</button>
-				<button class="primary" @click="deleteNote">Confirm</button>
-			</form>
-		</vue-final-modal>
-		<vue-final-modal v-model="showDeleteArrowModal"
-			class="note-modal"
-			content-class="note-modal-content"
-			overlay-transition="vfm-fade"
-			content-transition="vfm-fade">
-			<form @submit.prevent>
-				<p>
-					Do you really want to delete the arrow between {{ currentArrowInfo }}
-				</p>
-				<button @click="showDeleteArrowModal = false">Cancel</button>
-				<button class="primary" @click="deleteArrow">Confirm</button>
-			</form>
-		</vue-final-modal>
+		<edit-note v-model="currentEditNote"/>
+		<delete-note v-model="currentDeleteNote"/>
+		<delete-arrow v-model="currentArrow"/>
 		<teleport to="body">
 			<div class="zoom">
 				<font-awesome-icon :icon="['fas', 'minus']" @click="onDecrease"/>
@@ -138,25 +109,28 @@ const { currentArrowInfo, showDeleteArrowModal, onDeleteArrow, deleteArrow } = u
 	padding: 0 5px;
 }
 
-.note-modal {
+.editor-modal {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-.note-modal-content {
+.editor-modal-content {
 	display: flex;
 	flex-direction: column;
 	padding: 1rem;
 	background: #fff;
 	border-radius: 0.5rem;
+	max-width: 50vw;
+	max-height: 50vh;
+	overflow: auto;
 }
-.note-modal-content > * + *{
+.editor-modal-content > * + *{
 	margin: 0.5rem 0;
 }
-.note-modal-content input {
+.editor-modal-content input {
 	width: 200px;
 }
-.note-modal-content textarea {
+.editor-modal-content textarea {
 	width: 200px;
 	height: 100px;
 }

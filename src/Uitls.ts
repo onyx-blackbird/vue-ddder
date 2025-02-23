@@ -1,3 +1,5 @@
+import { unref } from 'vue';
+
 export const OFFSET_X = 200;
 export const GRID_SIZE = 20;
 export const TRANSFER_FORMAT = 'application/json';
@@ -16,4 +18,16 @@ export function debounce<T extends Function>(cb: T, wait = 300){
 		clearTimeout(timer);
 		timer = setTimeout(() => cb(...args), wait);
 	};
+}
+
+export function unrefMap<T extends Object>(sourceMap: Map<string, T>): Map<string, T> {
+	const plainMap = new Map<string, T>();
+	sourceMap.forEach((value, key) => {
+		const valueUnref: T = Object.keys(value).reduce((acc, key) => {
+			acc[key as keyof typeof acc] = unref(value[key as keyof typeof acc]);
+			return acc;
+		}, {} as T);
+		plainMap.set(unref(key), valueUnref);
+	});
+	return plainMap;
 }

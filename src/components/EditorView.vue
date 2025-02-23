@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import useNote from '../composables/useNote';
 import useScroll from '../composables/useScroll';
-import { NOTE_TYPES } from '../models/Note';
+import { NOTE_TYPES, SIZE } from '../models/Note';
 
 import EditorGrid from './EditorGrid.vue'
 import SideBar from './sidebar/SideBar.vue'
-import StickyNote from './StickyNote.vue'
 
 const { onNewNoteDragStart, onNewNoteDrop } = useNote();
 const { showScrollUp, showScrollDown, onScroll, scrollToTop, scrollToBottom } = useScroll('aside');
-
+const noteStyle = computed(() => {
+	return {
+		width: SIZE + 'px',
+		height: SIZE + 'px',
+	};
+});
 onMounted(() => {
 	document.title = 'Event Storming';
 });
@@ -23,12 +27,14 @@ onMounted(() => {
 	<main>
 		<aside class="left" ref="aside" @scroll="onScroll">
 			<h2>Notes</h2>
-			<sticky-note v-for="(type) in NOTE_TYPES" 
-				:key="type.id"
-				:note="type"
-				:readonly="true"
-				:style="type.style"
-				@dragstart="onNewNoteDragStart($event, type)"/>
+			<div class="note template" v-for="(note) in NOTE_TYPES"
+				draggable="true"
+				:key="note.type"
+				:class="note.type"
+				:style="noteStyle"
+				@dragstart="onNewNoteDragStart($event, note)">
+				{{ note.title }}
+			</div>
 			<div class="scroll up" v-show="showScrollUp"
 				@click="scrollToTop">
 				<font-awesome-icon :icon="['fas', 'angles-up']"/>

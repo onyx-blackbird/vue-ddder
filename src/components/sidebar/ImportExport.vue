@@ -31,10 +31,10 @@ function onExportGlossary() {
 	const fileName = ensureExtension(glossaryFileName.value, glossaryFormat.value);
 	const glossary = eventStormStore.exportGlossary();
 	if (glossaryFormat.value === JSON_FORMAT) {
-		download(fileName, JSON.stringify(glossary));
+		download(fileName, JSON.stringify(Object.fromEntries(glossary)));
 	} else {
 		const markdown = new Array<string>();
-		glossary.forEach(entry => {
+		glossary.get(eventStormStore.getState().currentLanguage)?.forEach(entry => {
 			markdown.push(`**${entry.title}**  `);
 			markdown.push(`${entry.description}  `);
 		});
@@ -45,7 +45,7 @@ function onExportGlossary() {
 
 <template>
 	<h2>Import / Export</h2>
-	<form class="options" @submit.prevent>
+	<form @submit.prevent>
 		<div class="dropbox">
 			<input type="file" accept="application/json" @change="onLoadFile">
 			<p>{{fileMessage}}</p>
@@ -54,7 +54,7 @@ function onExportGlossary() {
 			<button @click="onImport">Import Notes and Arrows</button>
 		</div>
 	</form>
-	<form class="options" @submit.prevent>
+	<form @submit.prevent>
 		<div>
 			<label for="fileName">File Name </label><input type="text" id="fileName" v-model="notesFileName">
 		</div>
@@ -62,7 +62,7 @@ function onExportGlossary() {
 			<button @click="onExport">Export Notes and Arrows</button>
 		</div>
 	</form>
-	<form class="options" @submit.prevent>
+	<form @submit.prevent>
 		<div>
 			<label for="fileName">File Name </label><input type="text" id="fileName" v-model="glossaryFileName">
 		</div>

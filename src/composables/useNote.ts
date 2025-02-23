@@ -1,4 +1,4 @@
-import Note from "../models/Note";
+import Note, { type NoteTemplate } from "../models/Note";
 import { eventStormStore } from "../store/EventStorm";
 import { COPY_EFFECT, GRID_SIZE, MOVE_EFFECT, TRANSFER_FORMAT, type MoveData } from "../Uitls";
 
@@ -11,7 +11,7 @@ interface DragData {
 
 export default function useNote() {
 
-	function onNewNoteDragStart(evt: DragEvent, note: Note): void {
+	function onNewNoteDragStart(evt: DragEvent, note: NoteTemplate): void {
 		if (evt.dataTransfer && evt.target instanceof HTMLElement) {
 			evt.dataTransfer.dropEffect = COPY_EFFECT;
 			evt.dataTransfer.effectAllowed = COPY_EFFECT;
@@ -35,7 +35,8 @@ export default function useNote() {
 				x = Math.ceil(x / GRID_SIZE) * GRID_SIZE;
 				y = Math.ceil(y / GRID_SIZE) * GRID_SIZE;
 			}
-			const note = new Note(dragData.type, dragData.title, x, y);
+			const note = new Note(dragData.type, x, y);
+			note.setTitle(eventStormStore.getState().currentLanguage, dragData.title);
 			eventStormStore.addNote(note);
 		}
 	}

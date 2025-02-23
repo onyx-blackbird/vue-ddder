@@ -58,7 +58,6 @@ function onDeleteArrow(arrow: Arrow) {
 			class="resizable"
 			:key="note.id"
 			:note="note"
-			:style="note.style"
 			@change-note="onChangeNote(note)"
 			@delete-note="onDeleteNote(note)"
 			@dragstart="onDragNoteStart($event, note)"

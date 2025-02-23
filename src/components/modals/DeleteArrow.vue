@@ -17,7 +17,9 @@ watch(model, (newArrow) => {
 		const startNote = eventStormStore.findNote(newArrow.startNoteId);
 		const endNote = eventStormStore.findNote(newArrow.endNoteId);
 		if (startNote && endNote) {
-			currentArrowInfo.value = `"${startNote.title}" and "${endNote.title}"`;
+			const startTitle = startNote.getTranslation(eventStormStore.getState().currentLanguage)?.title;
+			const endTitle = endNote.getTranslation(eventStormStore.getState().currentLanguage)?.title;
+			currentArrowInfo.value = `"${startTitle}" and "${endTitle}"`;
 		}
 		showModal.value = true;
 	}

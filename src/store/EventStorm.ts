@@ -8,6 +8,8 @@ interface EventStormState extends Object {
 	zoom: number;
 	arrowColor: string;
 	gridSize: Size;
+	currentLanguage: string;
+	languages: Array<string>;
 	notes: Array<Note>;
 	arrows: Array<Arrow>;
 }
@@ -16,6 +18,8 @@ interface JsonModel {
 	gridSize: any,
 	snap: boolean,
 	arrowColor: string,
+	currentLanguage: string;
+	languages: Array<string>;
 	notes: Array<any>;
 	arrows: Array<any>;
 }
@@ -26,6 +30,7 @@ interface GlossaryModel {
 }
 
 const DEFAULT_SIZE = new Size(10000, 6000);
+const DEFAULT_LANGUAGE = 'en';
 
 class EventStormStore extends Store<EventStormState> {
 
@@ -35,6 +40,8 @@ class EventStormStore extends Store<EventStormState> {
 			zoom: 100,
 			arrowColor: '#000000',
 			gridSize: DEFAULT_SIZE,
+			currentLanguage: DEFAULT_LANGUAGE,
+			languages: [DEFAULT_LANGUAGE],
 			notes: new Array<Note>(),
 			arrows: new Array<Arrow>(),
 		});
@@ -59,6 +66,17 @@ class EventStormStore extends Store<EventStormState> {
 	public setGridSize(width: number, height: number) {
 		this.state.gridSize.width = width;
 		this.state.gridSize.height = height;
+	}
+
+	public setLanguage(language: string) {
+		this.state.currentLanguage = language;
+	}
+
+	public setLanguages(languages: Array<string>) {
+		this.state.languages = languages;
+		if (!this.state.languages.includes(this.state.currentLanguage)) {
+			this.state.currentLanguage = this.state.languages[0];
+		}
 	}
 	
 	public addArrow(arrow: Arrow): void {
@@ -103,6 +121,8 @@ class EventStormStore extends Store<EventStormState> {
 			},
 			snap: this.state.snap,
 			arrowColor: this.state.arrowColor,
+			currentLanguage: this.state.currentLanguage,
+			languages: this.state.languages,
 			notes,
 			arrows,
 		};
@@ -114,16 +134,23 @@ class EventStormStore extends Store<EventStormState> {
 		this.setGridSize(jsonModel.gridSize.width, jsonModel.gridSize.height);
 		this.setSnap(jsonModel.snap);
 		this.setArrowColor(jsonModel.arrowColor);
+		this.setLanguage(jsonModel.currentLanguage);
+		this.state.languages = jsonModel.languages;
 		jsonModel.notes.forEach(note => this.addNote(Note.fromJsonObject(note)));
 		jsonModel.arrows.forEach(arrow => this.addArrow(Arrow.fromJsonObject(arrow)));
 	}
 
-	public exportGlossary(): Array<GlossaryModel> {
-		const glossary = new Array();
-		this.state.notes.forEach(note => glossary.push({
-			title: note.title,
-			description: note.description
-		}));
+	public exportGlossary(): Map<string, Array<GlossaryModel>> {
+		const glossary = new Map<string, Array<GlossaryModel>>();
+		this.state.languages.forEach(language => glossary.set(language, []));
+		this.state.notes.forEach(note => {
+			note.translations.forEach((translation, language) => {
+				glossary.get(language)!.push({
+					title: translation.title,
+					description: translation.description || '',
+				});
+			});
+		});
 		return glossary;
 	}
 

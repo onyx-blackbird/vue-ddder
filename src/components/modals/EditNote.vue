@@ -1,30 +1,37 @@
 <script setup lang="ts">
-import { ref, watch, type ModelRef } from 'vue';
+import { computed, ref, watch, type ModelRef, type Ref } from 'vue';
 
 import { VueFinalModal } from 'vue-final-modal';
 
-import Note from '../../models/Note';
+import { unrefMap } from '../../Uitls';
+import Note, { type Translation } from '../../models/Note';
 import useModal from '../../composables/useModal';
+import { eventStormStore } from '../../store/EventStorm';
 
 const model = defineModel<Note|null>();
-
+const languages = computed(() => eventStormStore.getState().languages);
 const { showModal, closeModal } = useModal(model as ModelRef<Note|null>);
-const currentTitle = ref('');
-const currentDescription = ref('');
-
+const translationsRef: Ref<Array<Translation>> = ref([]);
 watch(model, (newNote) => {
 	if (newNote != null) {
-		currentTitle.value = newNote.title;
-		currentDescription.value = newNote.description;
+		const translations = unrefMap(newNote.translations);
+		languages.value.forEach(language => {
+			const translation = translations.get(language) || {title: '', description: ''};
+			translationsRef.value.push(translation);
+		})
 		showModal.value = true;
 	}
 });
 
-function onSaveNoteModal() {
+
+function onSave() {
 	if (model.value != null) {
-		model.value.title = currentTitle.value;
-		model.value.description = currentDescription.value;
+		languages.value.forEach((language, index) => {
+			const translation = translationsRef.value[index];
+			model.value!.translations.set(language, translation);
+		});
 	}
+	translationsRef.value = [];
 	closeModal();
 }
 </script>
@@ -37,16 +44,19 @@ function onSaveNoteModal() {
 		content-transition="vfm-fade"
 		@closed="closeModal">
 		<form @submit.prevent>
-			<p>
-				<label for="title">Title </label>
-				<input type="string" id="title" v-model="currentTitle">
-			</p>
-			<p>
-				<label for="description">Description </label>
-				<textarea id="description" v-model="currentDescription"></textarea>
-			</p>
+			<fieldset v-for="(language, index) in languages" :key="index">
+				<legend>{{ language }}</legend>
+				<p>
+					<label :for="`title_${index}`">Title </label>
+					<input type="string" :id="`title_${index}`" v-model="translationsRef[index].title">
+				</p>
+				<p>
+					<label :for="`description_${index}`">Description </label>
+					<textarea :id="`description_${index}`" v-model="translationsRef[index].description"></textarea>
+				</p>
+			</fieldset>
 			<button @click="closeModal">Cancel</button>
-			<button class="primary" @click="onSaveNoteModal">Save</button>
+			<button class="primary" @click="onSave">Save</button>
 		</form>
 	</vue-final-modal>
 </template>

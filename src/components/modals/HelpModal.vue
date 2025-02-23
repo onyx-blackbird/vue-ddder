@@ -12,6 +12,12 @@ const model = defineModel({required: true, default: false});
 		<h2>Help</h2>
 		<div class="help-modal-scroll">
 			<p>The sidebar can be collapsed and expanded by pressing the chevron icon.</p>
+			<h3>Languages</h3>
+			<ul>
+				<li>Select the display language; initially only "en" is available.</li>
+				<li>Additional languages can be added with the "Edit Language Options" button.</li>
+				<li>Edit the default language and/or add additonal languages (only two letter codes are allowed.)</li>
+			</ul>
 			<h3>Options</h3>
 			<ul>
 				<li>The size of the canvas can be adjusted with the input fields; the values represent the number of squares on the grid pattern.</li>
@@ -25,7 +31,8 @@ const model = defineModel({required: true, default: false});
 			</ul>
 			<h3>Notes</h3>
 			<ul>
-				<li>Drag notes from the left side onto the grid in the middle. Double click on the title to edit it or use the edit icon to also provide a description.</li>
+				<li>Drag notes from the left side onto the grid in the middle. Double click on the title to edit it in the current language</li>
+				<li>Use the edit icon to add titles and descriptions in all configured languages</li>
 				<li>Once placed on the canvas the notes can be dragged around it and the size can be adjusted with the handle on the lower right corner.</li>
 				<li>To delete a note click the trash can icon.</li>
 			</ul>

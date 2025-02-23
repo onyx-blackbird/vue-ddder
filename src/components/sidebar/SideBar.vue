@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import CanvasOptions from './CanvasOptions.vue';
+import LanguageOptions from './LanguageOptions.vue';
 import ImportExport from './ImportExport.vue';
 import PrintNotes from './PrintNotes.vue';
 import HelpModal from '../modals/HelpModal.vue';
@@ -39,6 +40,7 @@ function onShowHelpModal() {
 				:icon="['far', 'circle-question']"
 				@click="onShowHelpModal"/>
 		</div>
+		<language-options/>
 		<canvas-options/>
 		<import-export/>
 		<print-notes/>
@@ -75,12 +77,12 @@ h2.vertical {
     margin: 10px 0 0 0;
     line-height: 0.8;
 }
-form.options {
+.sidebar form {
 	border: 1px solid #333333;
 	padding: 0.5em;
 	margin-bottom: 1em;
 }
-form.options div {
+.sidebar form div {
 	margin: 5px 2px;
 }
 input {

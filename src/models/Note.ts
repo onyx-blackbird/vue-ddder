@@ -6,22 +6,29 @@ export const SIZE = 140;
 export const CHANGE_NOTE = 'change-note';
 export const DELETE_NOTE = 'delete-note';
 
+export interface Translation {
+	title: string;
+	description?: string;
+}
+
+export interface NoteTemplate {
+	type: string;
+	title: string;
+}
+
 export default class Note {
 
 	private _id: string;
 	private _type: string;
-	private _title: string = '';
-	private _description: string = '';
+	private _translations: Map<string, Translation> = new Map();
 	private _coordinates: Coordinates;
 	private _size: Size;
 
-	constructor(type: string, title: string, x: number, y: number) {
+	constructor(type: string, x: number, y: number) {
 		this._id = uuidv6();
-		this._title = title;
 		this._type = type;
 		this._coordinates = new Coordinates(x, y);
 		this._size = new Size(SIZE, SIZE);
-		this._title = title;
 	}
 
 	get id() {
@@ -36,20 +43,12 @@ export default class Note {
 		return this._type;
 	}
 
-	get title() {
-		return this._title;
+	get translations() {
+		return this._translations;
 	}
 
-	set title(title: string) {
-		this._title = title;
-	}
-
-	get description() {
-		return this._description;
-	}
-
-	set description(descriptio: string) {
-		this._description = descriptio;
+	set translations(translation: Map<string, Translation>) {
+		this._translations = translation;
 	}
 
 	get coordinates() {
@@ -69,6 +68,17 @@ export default class Note {
 		};
 	}
 
+	public getTranslation(language: string): Translation|undefined {
+		return this._translations.get(language);
+	}
+
+	public setTitle(language: string, title: string): void {
+		this._translations.set(language, {
+			title,
+			description: this._translations.get(language)?.description
+		});
+	}
+
 	public move(x: number, y: number): void {
 		this._coordinates.x = x;
 		this._coordinates.y = y;
@@ -83,7 +93,7 @@ export default class Note {
 		return {
 			id: this._id,
 			type: this._type,
-			title: this._title,
+			translations: Object.fromEntries(this._translations),
 			coordinates: {
 				x: this._coordinates.x,
 				y: this._coordinates.y
@@ -96,22 +106,23 @@ export default class Note {
 	}
 
 	public static fromJsonObject(jsonNote: Note): Note {
-		const note = new Note(jsonNote.type, jsonNote.title, jsonNote.coordinates.x, jsonNote.coordinates.y);
+		const note = new Note(jsonNote.type, jsonNote.coordinates.x, jsonNote.coordinates.y);
 		note.id = jsonNote.id;
+		jsonNote.translations.forEach((translation, language) => note._translations.set(language, translation));
 		note.resize(jsonNote.size.width, jsonNote.size.height);
 		return note;
 	}
 
 }
 
-export const NOTE_TYPES: Array<Note> = [
-	new Note('event', 'Event', 0, 0),
-	new Note('command', 'Command', 0, 0),
-	new Note('policy', 'Policy', 0, 0),
-	new Note('external', 'External System', 0, 0),
-	new Note('actor', 'Actor', 0, 0),
-	new Note('object', 'Object', 0, 0),
-	new Note('view', 'View', 0, 0),
-	new Note('openissue', 'Open Issue', 0, 0),
-	new Note('comment', 'Comment', 0, 0),
+export const NOTE_TYPES: Array<NoteTemplate> = [
+	{type: 'event', title: 'Event'},
+	{type: 'command', title: 'Command'},
+	{type: 'policy', title: 'Policy'},
+	{type: 'external', title: 'External System'},
+	{type: 'actor', title: 'Actor'},
+	{type: 'object', title: 'Object'},
+	{type: 'view', title: 'View'},
+	{type: 'openissue', title: 'Open Issue'},
+	{type: 'comment', title: 'Comment'},
 ];

@@ -15,14 +15,15 @@ const { handlePrint } = useVueToPrint({
 
 const selectedTypes: Ref<Array<Note>> = ref([]);
 
+const language = computed(() => eventStormStore.getState().currentLanguage);
 const notes = computed(() => eventStormStore.getState().notes.filter(note => 
-	selectedTypes.value.find(noteType => noteType.type === note.type)
+	selectedTypes.value.find(noteType => noteType.type === note.type) && note.getTranslation(language.value)?.title
 ));
 </script>
 
 <template>
 	<h2>Print</h2>
-	<form class="options" @submit.prevent>
+	<form @submit.prevent>
 		<div>
 			<vue-multiselect v-model="selectedTypes"
 				placeholder="Select note types to print"
@@ -45,7 +46,7 @@ const notes = computed(() => eventStormStore.getState().notes.filter(note =>
 			:key="note.id"
 			class="note"
 			:class="note.type">
-			{{ note.title }}
+			{{ note.getTranslation(language)?.title }}
 		</div>
 	</div>
 </template>

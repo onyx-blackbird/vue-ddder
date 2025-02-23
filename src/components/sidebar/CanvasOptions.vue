@@ -24,7 +24,7 @@ const gridHeight = computed({
 
 <template>
 	<h2>Options</h2>
-	<form class="options" @submit.prevent>
+	<form @submit.prevent>
 		<div>
 			<label for="gridWidth">Grid Width </label>
 			<input type="number" id="gridWidth" min="500" max="50000" step="100" v-model="gridWidth">

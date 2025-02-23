@@ -16,8 +16,8 @@ const props = defineProps<Props>();
 const emit = defineEmits([CHANGE_NOTE, DELETE_NOTE]);
 
 const titleRef = computed({
-	get: () => props.note.title,
-	set: (newValue: string) => props.note.title = newValue
+	get: () => props.note.getTranslation(eventStormStore.getState().currentLanguage)?.title,
+	set: (newValue: string) => props.note.setTitle(eventStormStore.getState().currentLanguage, newValue)
 });
 const editMode = ref(false);
 const input = useTemplateRef('title-input');
@@ -50,6 +50,7 @@ const onResizeObserver = debounce(
 	<div class="note" draggable="true"
 		v-resize-observer="onResizeObserver"
 		:class="note.type"
+		:style="note.style"
 		@dblclick="onDblCLick">
 		<div class="edit" v-if="!readonly">
 			<font-awesome-icon
@@ -59,7 +60,7 @@ const onResizeObserver = debounce(
 				:icon="['far', 'trash-can']"
 				@click="emit(DELETE_NOTE)"/>
 		</div>
-		<span v-show="!editMode">{{note.title}}</span>
+		<span v-show="!editMode">{{titleRef}}</span>
 		<input type="text" class="editTitle"
 			ref="title-input"
 			v-show="editMode"
@@ -111,6 +112,9 @@ const onResizeObserver = debounce(
 	position: absolute;
 	resize: both;
 	overflow: hidden;
+}
+.note.template {
+	user-select: none;
 }
 
 .note .edit {

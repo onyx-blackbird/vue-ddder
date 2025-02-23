@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, type ModelRef } from 'vue';
+import { ref, watch, type ModelRef } from 'vue';
 
 import { VueFinalModal } from 'vue-final-modal';
 
@@ -10,8 +10,12 @@ import useModal from '../../composables/useModal';
 const model = defineModel<Note|null>();
 
 const { showModal, closeModal } = useModal(model as ModelRef<Note|null>);
-
+const title = ref('');
 watch(model, (newNote) => {
+	if (newNote != null) {
+		showModal.value = true;
+		title.value = newNote.getTranslation(eventStormStore.getState().currentLanguage)?.title || '';
+	}
 	showModal.value = newNote != null;
 });
 
@@ -32,7 +36,7 @@ function deleteNote() {
 		@closed="closeModal">
 		<form @submit.prevent>
 			<p>
-				Do you really want to delete "{{model!.title}}""
+				Do you really want to delete "{{ title }}""
 			</p>
 			<button @click="closeModal">Cancel</button>
 			<button class="primary" @click="deleteNote">Confirm</button>

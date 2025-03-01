@@ -2,10 +2,13 @@
 import { computed, ref, useTemplateRef, type Ref } from 'vue';
 import { useVueToPrint } from 'vue-to-print';
 
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 import VueMultiselect from 'vue-multiselect';
 
 import Note, { NOTE_TYPES } from '../../models/Note';
 import { eventStormStore } from '../../store/EventStorm';
+import useCollapse from '../../composables/useCollapse';
 
 const notesRef = useTemplateRef('notesRef');
 const { handlePrint } = useVueToPrint({
@@ -19,28 +22,33 @@ const language = computed(() => eventStormStore.getState().currentLanguage);
 const notes = computed(() => eventStormStore.getState().notes.filter(note => 
 	selectedTypes.value.find(noteType => noteType.type === note.type) && note.getTranslation(language.value)?.title
 ));
+const { collapsedClass, icon, toggleCollapse } = useCollapse();
 </script>
 
 <template>
-	<h2>Print</h2>
-	<form @submit.prevent>
+	<h2 :class="collapsedClass">Print Cards <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapse"/></h2>
+	<div class="collapsible" :class="collapsedClass">
 		<div>
-			<vue-multiselect v-model="selectedTypes"
-				placeholder="Select note types to print"
-				track-by="type"
-				label="title"
-				selectLabel=""
-				:multiple="true"
-				:close-on-select="false"
-				:allow-empty="false"
-				:searchable="false"
-				:hide-selected="true"
-				:options="NOTE_TYPES"/>
+			<form @submit.prevent>
+				<div>
+					<vue-multiselect v-model="selectedTypes"
+						placeholder="Select note types to print"
+						track-by="type"
+						label="title"
+						selectLabel=""
+						:multiple="true"
+						:close-on-select="false"
+						:allow-empty="false"
+						:searchable="false"
+						:hide-selected="true"
+						:options="NOTE_TYPES"/>
+				</div>
+				<div>
+					<button @click="handlePrint">Print the notes on A4 paper</button>
+				</div>
+			</form>
 		</div>
-		<div>
-			<button @click="handlePrint">Print the notes on A4 paper</button>
-		</div>
-	</form>
+	</div>
 	<div class="notes" ref="notesRef">
 		<div v-for="(note) in notes"
 			:key="note.id"

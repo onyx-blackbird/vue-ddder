@@ -17,6 +17,9 @@ This app is meant to help to digitize event storming outcomes to support develop
 ## Roadmap
 This version is still a beta and may have a few bugs. The goal is to add additional features over time.
 
+### Glossary Screen
+- add a dedicated screen to edit the notes in a table view
+
 ### UML Screen
-- A second screen where the actual models can be defined in an UML like manner.
+- Additional screen where the actual models can be defined in an UML like manner.
 - Allow to annotate arrows.

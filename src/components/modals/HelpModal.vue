@@ -18,7 +18,7 @@ const model = defineModel({required: true, default: false});
 				<li>Additional languages can be added with the "Edit Language Options" button.</li>
 				<li>Edit the default language and/or add additonal languages (only two letter codes are allowed.)</li>
 			</ul>
-			<h3>Options</h3>
+			<h3>Canvas Options</h3>
 			<ul>
 				<li>The size of the canvas can be adjusted with the input fields; the values represent the number of squares on the grid pattern.</li>
 				<li>Per default the notes snap to the grid, this can be disabled by unchecking the corresponding checkbox.</li>
@@ -41,9 +41,14 @@ const model = defineModel({required: true, default: false});
 				<li>Right click and hold on the source note and then release the right mouse button on the target note to draw an arrow between them.</li>
 				<li>To delete an arrow right click on it.</li>
 			</ul>
+			<h3>Save and Load</h3>
+			<ul>
+				<li>The whole layout can be saved in the local storage of the browser.</li>
+				<li>This layout can be loaded again to continue the work.</li>
+			</ul>
 			<h3>Import and Export</h3>
 			<ul>
-				<li>The whole layout can be exported as a JSON file as there is no persistency availeble at the moment.</li>
+				<li>The whole layout can be exported as a JSON file.</li>
 				<li>This exported JSON file can be imported again to continue the work.</li>
 				<li>It is recommended to add descriptions to notes so they can be exported as a basis for the ubiquitos language; either in JSON format or Markdown to be used in Wikis</li>
 			</ul>

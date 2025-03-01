@@ -3,6 +3,16 @@ import Note from "../models/Note";
 import { Size } from "../models/Layout";
 import { Store } from "./Store";
 
+export interface JsonModel {
+	gridSize: any,
+	snap: boolean,
+	arrowColor: string,
+	currentLanguage: string;
+	languages: Array<string>;
+	notes: Array<any>;
+	arrows: Array<any>;
+}
+
 interface EventStormState extends Object {
 	snap: boolean;
 	zoom: number;
@@ -14,15 +24,6 @@ interface EventStormState extends Object {
 	arrows: Array<Arrow>;
 }
 
-interface JsonModel {
-	gridSize: any,
-	snap: boolean,
-	arrowColor: string,
-	currentLanguage: string;
-	languages: Array<string>;
-	notes: Array<any>;
-	arrows: Array<any>;
-}
 
 interface GlossaryModel {
 	title: string,

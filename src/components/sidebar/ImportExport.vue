@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-import useFile from '../../composables/useFile';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 import { eventStormStore } from '../../store/EventStorm';
+import useFile from '../../composables/useFile';
 import useGlossary from '../../composables/useGlossary';
+import useCollapse from '../../composables/useCollapse';
 
 const JSON_FORMAT = 'json';
 const MD_FORMAT = 'md';
@@ -19,6 +22,7 @@ watch(glossaryFormat, (newFormat, oldFormat) => {
 
 const { fileContents, fileMessage, onLoadFile, ensureExtension, download, downloadAsJson } = useFile();
 const { getJson, getSimpleMarkdown, getExtendedMarkdown } = useGlossary();
+const { collapsedClass, icon, toggleCollapse } = useCollapse();
 
 function onExport() {
 	downloadAsJson(notesFileName.value, JSON.stringify(eventStormStore.export()));
@@ -49,37 +53,41 @@ function onExportGlossary() {
 </script>
 
 <template>
-	<h2>Import / Export</h2>
-	<form @submit.prevent>
-		<div class="dropbox">
-			<input type="file" accept="application/json" @change="onLoadFile">
-			<p>{{fileMessage}}</p>
-		</div>
+	<h2 :class="collapsedClass">Import / Export <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapse"/></h2>
+	<div class="collapsible" :class="collapsedClass">
 		<div>
-			<button @click="onImport">Import Notes and Arrows</button>
+			<form @submit.prevent>
+				<div class="dropbox">
+					<input type="file" accept="application/json" @change="onLoadFile">
+					<p>{{fileMessage}}</p>
+				</div>
+				<div>
+					<button @click="onImport">Import Notes and Arrows</button>
+				</div>
+			</form>
+			<form @submit.prevent>
+				<div>
+					<label for="fileName">File Name </label><input type="text" id="fileName" v-model="notesFileName">
+				</div>
+				<div>
+					<button @click="onExport">Export Notes and Arrows</button>
+				</div>
+			</form>
+			<form @submit.prevent>
+				<div>
+					<label for="fileName">File Name </label><input type="text" id="fileName" v-model="glossaryFileName">
+				</div>
+				<div class="radio">
+					<label for="jsonFormat"><input type="radio" id="jsonFormat" name="format" :value="JSON_FORMAT" v-model="glossaryFormat"> JSON</label>
+					<label for="mdFormat"><input type="radio" id="mdFormat" name="format" :value="MD_FORMAT" v-model="glossaryFormat"> Markdown</label>
+					<label for="mkdFormat"><input type="radio" id="mkdFormat" name="format" :value="MKD_FORMAT" v-model="glossaryFormat"> Markdown (extended)</label>
+				</div>
+				<div>
+					<button @click="onExportGlossary">Export Glossary</button>
+				</div>
+			</form>
 		</div>
-	</form>
-	<form @submit.prevent>
-		<div>
-			<label for="fileName">File Name </label><input type="text" id="fileName" v-model="notesFileName">
-		</div>
-		<div>
-			<button @click="onExport">Export Notes and Arrows</button>
-		</div>
-	</form>
-	<form @submit.prevent>
-		<div>
-			<label for="fileName">File Name </label><input type="text" id="fileName" v-model="glossaryFileName">
-		</div>
-		<div class="radio">
-			<label for="jsonFormat"><input type="radio" id="jsonFormat" name="format" :value="JSON_FORMAT" v-model="glossaryFormat"> JSON</label>
-			<label for="mdFormat"><input type="radio" id="mdFormat" name="format" :value="MD_FORMAT" v-model="glossaryFormat"> Markdown</label>
-			<label for="mkdFormat"><input type="radio" id="mkdFormat" name="format" :value="MKD_FORMAT" v-model="glossaryFormat"> Markdown (extended)</label>
-		</div>
-		<div>
-			<button @click="onExportGlossary">Export Glossary</button>
-		</div>
-	</form>
+	</div>
 </template>
 
 <style>

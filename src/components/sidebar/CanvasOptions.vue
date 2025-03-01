@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { eventStormStore } from '../../store/EventStorm';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 import { GRID_SIZE } from '../../Uitls';
+import { eventStormStore } from '../../store/EventStorm';
+import useCollapse from '../../composables/useCollapse';
+
+const { collapsedClass, icon, toggleCollapse } = useCollapse();
 
 const snap = computed({
 	get: () => eventStormStore.getState().snap,
@@ -23,23 +28,27 @@ const gridHeight = computed({
 </script>
 
 <template>
-	<h2>Options</h2>
-	<form @submit.prevent>
+	<h2 :class="collapsedClass">Canvas Options <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapse"/></h2>
+	<div class="collapsible" :class="collapsedClass">
 		<div>
-			<label for="gridWidth">Grid Width </label>
-			<input type="number" id="gridWidth" min="500" max="50000" step="100" v-model="gridWidth">
+			<form @submit.prevent>
+				<div>
+					<label for="gridWidth">Grid Width </label>
+					<input type="number" id="gridWidth" min="500" max="50000" step="100" v-model="gridWidth">
+				</div>
+				<div>
+					<label for="gridHeight">Grid Height </label>
+					<input type="number" id="gridHeight" min="300" max="25000" step="100" v-model="gridHeight">
+				</div>
+				<div>
+					<label for="snap">Snap to grid</label>
+					<input type="checkbox" id="snap" v-model="snap" role="switch">
+				</div>
+				<div>
+					<label for="color">Arrow color</label>
+					<input type="color" id="color" v-model="arrowColor">
+				</div>
+			</form>
 		</div>
-		<div>
-			<label for="gridHeight">Grid Height </label>
-			<input type="number" id="gridHeight" min="300" max="25000" step="100" v-model="gridHeight">
-		</div>
-		<div>
-			<label for="snap">Snap to grid</label>
-			<input type="checkbox" id="snap" v-model="snap" role="switch">
-		</div>
-		<div>
-			<label for="color">Arrow color</label>
-			<input type="color" id="color" v-model="arrowColor">
-		</div>
-	</form>
+	</div>
 </template>

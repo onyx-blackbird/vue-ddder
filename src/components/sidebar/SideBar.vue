@@ -7,7 +7,10 @@ import CanvasOptions from './CanvasOptions.vue';
 import LanguageOptions from './LanguageOptions.vue';
 import ImportExport from './ImportExport.vue';
 import PrintNotes from './PrintNotes.vue';
+import LocalStorage from './LocalStorage.vue';
 import HelpModal from '../modals/HelpModal.vue';
+
+import { eventStormStore } from '../../store/EventStorm';
 
 const EXPANDED = '300px';
 const COLLAPSED = '50px';
@@ -42,6 +45,9 @@ function onShowHelpModal() {
 		</div>
 		<language-options/>
 		<canvas-options/>
+		<local-storage storageType="eventStorm"
+			:export="eventStormStore.export.bind(eventStormStore)"
+			:import="eventStormStore.import.bind(eventStormStore)"/>
 		<import-export/>
 		<print-notes/>
 	</div>
@@ -72,11 +78,6 @@ function onShowHelpModal() {
 	height: 20px;
 	cursor: pointer;
 }
-h2.vertical {
-	writing-mode: vertical-lr;
-    margin: 10px 0 0 0;
-    line-height: 0.8;
-}
 .sidebar form {
 	border: 1px solid #333333;
 	padding: 0.5em;
@@ -84,6 +85,34 @@ h2.vertical {
 }
 .sidebar form div {
 	margin: 5px 2px;
+}
+.sidebar h2 {
+	position: relative;
+	margin: 0.5em 0;
+}
+h2.vertical {
+	writing-mode: vertical-lr;
+    margin: 10px 0 0 0;
+    line-height: 0.8;
+}
+h2.collapsed {
+	margin-bottom: 0;
+}
+h2 svg {
+	position: absolute;
+	top: 5px;
+	right: 0;
+}
+.collapsible {
+	display: grid; 
+	grid-template-rows: 1fr;
+	transition: 250ms grid-template-rows ease;
+}
+.collapsible.collapsed {
+	grid-template-rows: 0fr;
+}
+.collapsible > div {
+	overflow: hidden;
 }
 input {
 	width: 100px;

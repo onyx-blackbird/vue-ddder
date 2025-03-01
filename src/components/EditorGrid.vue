@@ -133,7 +133,11 @@ function onDeleteArrow(arrow: Arrow) {
 	width: 200px;
 	height: 100px;
 }
-
+.editor-modal-scroll {
+	max-height: 40vh;
+	overflow: auto;
+	margin-bottom: 1em;
+}
 .arrow {
 	--t: 5px;  /* tail size */
 	--h: 10px; /* head size */

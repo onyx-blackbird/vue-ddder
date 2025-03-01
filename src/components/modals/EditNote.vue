@@ -44,17 +44,19 @@ function onSave() {
 		content-transition="vfm-fade"
 		@closed="closeModal">
 		<form @submit.prevent>
-			<fieldset v-for="(language, index) in languages" :key="index">
-				<legend>{{ language }}</legend>
-				<p>
-					<label :for="`title_${index}`">Title </label>
-					<input type="string" :id="`title_${index}`" v-model="translationsRef[index].title">
-				</p>
-				<p>
-					<label :for="`description_${index}`">Description </label>
-					<textarea :id="`description_${index}`" v-model="translationsRef[index].description"></textarea>
-				</p>
-			</fieldset>
+			<div class="editor-modal-scroll">
+				<fieldset v-for="(language, index) in languages" :key="index">
+					<legend>{{ language }}</legend>
+					<p>
+						<label :for="`title_${index}`">Title </label>
+						<input type="string" :id="`title_${index}`" v-model="translationsRef[index].title">
+					</p>
+					<p>
+						<label :for="`description_${index}`">Description </label>
+						<textarea :id="`description_${index}`" v-model="translationsRef[index].description"></textarea>
+					</p>
+				</fieldset>
+			</div>
 			<button @click="closeModal">Cancel</button>
 			<button class="primary" @click="onSave">Save</button>
 		</form>

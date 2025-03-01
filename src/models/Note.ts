@@ -108,7 +108,8 @@ export default class Note {
 	public static fromJsonObject(jsonNote: Note): Note {
 		const note = new Note(jsonNote.type, jsonNote.coordinates.x, jsonNote.coordinates.y);
 		note.id = jsonNote.id;
-		jsonNote.translations.forEach((translation, language) => note._translations.set(language, translation));
+		const translations: Map<string, Translation> = new Map(Object.entries(jsonNote.translations));
+		translations.forEach((translation, language) => note._translations.set(language, translation));
 		note.resize(jsonNote.size.width, jsonNote.size.height);
 		return note;
 	}

@@ -3,9 +3,11 @@ import { ref, watch } from 'vue';
 
 import useFile from '../../composables/useFile';
 import { eventStormStore } from '../../store/EventStorm';
+import useGlossary from '../../composables/useGlossary';
 
 const JSON_FORMAT = 'json';
 const MD_FORMAT = 'md';
+const MKD_FORMAT = 'mkd';
 
 const notesFileName = ref('notes.json');
 const glossaryFileName = ref('glossary.json');
@@ -16,6 +18,7 @@ watch(glossaryFormat, (newFormat, oldFormat) => {
 });
 
 const { fileContents, fileMessage, onLoadFile, ensureExtension, download, downloadAsJson } = useFile();
+const { getJson, getSimpleMarkdown, getExtendedMarkdown } = useGlossary();
 
 function onExport() {
 	downloadAsJson(notesFileName.value, JSON.stringify(eventStormStore.export()));
@@ -28,18 +31,20 @@ function onImport() {
 }
 
 function onExportGlossary() {
-	const fileName = ensureExtension(glossaryFileName.value, glossaryFormat.value);
-	const glossary = eventStormStore.exportGlossary();
-	if (glossaryFormat.value === JSON_FORMAT) {
-		download(fileName, JSON.stringify(Object.fromEntries(glossary)));
-	} else {
-		const markdown = new Array<string>();
-		glossary.get(eventStormStore.getState().currentLanguage)?.forEach(entry => {
-			markdown.push(`**${entry.title}**  `);
-			markdown.push(`${entry.description}  `);
-		});
-		download(fileName, markdown.join('\n'));
+	let fileContent = '';
+	switch (glossaryFormat.value) {
+		case MD_FORMAT:
+			fileContent = getSimpleMarkdown();
+			break;
+		case MKD_FORMAT:
+			fileContent = getExtendedMarkdown();
+			break;
+		case JSON_FORMAT:
+		default:
+			fileContent = getJson();
 	}
+	const fileName = ensureExtension(glossaryFileName.value, glossaryFormat.value);
+	download(fileName, fileContent);
 }
 </script>
 
@@ -68,7 +73,8 @@ function onExportGlossary() {
 		</div>
 		<div class="radio">
 			<label for="jsonFormat"><input type="radio" id="jsonFormat" name="format" :value="JSON_FORMAT" v-model="glossaryFormat"> JSON</label>
-			<label for="markdownFormat"><input type="radio" id="markdownFormat" name="format" :value="MD_FORMAT" v-model="glossaryFormat"> Markdown</label>
+			<label for="mdFormat"><input type="radio" id="mdFormat" name="format" :value="MD_FORMAT" v-model="glossaryFormat"> Markdown</label>
+			<label for="mkdFormat"><input type="radio" id="mkdFormat" name="format" :value="MKD_FORMAT" v-model="glossaryFormat"> Markdown (extended)</label>
 		</div>
 		<div>
 			<button @click="onExportGlossary">Export Glossary</button>
@@ -100,5 +106,8 @@ input[type=file] {
     height: 90%;
     position: absolute;
     cursor: pointer;
+}
+.radio label {
+	width: 200px;
 }
 </style>

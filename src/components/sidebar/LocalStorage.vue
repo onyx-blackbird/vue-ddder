@@ -16,7 +16,7 @@ interface Props {
 }
 const props = defineProps<Props>();
 
-const { collapsedClass, icon, toggleCollapse } = useCollapse();
+const { collapsedClass, icon, toggleCollapseTitle } = useCollapse();
 
 const savedLayouts = useStorage(props.storageType, new Map<string, T>());
 
@@ -41,10 +41,15 @@ function onSave() {
 		savedLayouts.value.set(layoutName.value, props.export())
 	}
 }
+function onDelete() {
+	if (layoutName.value !== '') {
+		savedLayouts.value.delete(layoutName.value);
+	}
+}
 </script>
 
 <template>
-	<h2 :class="collapsedClass">Save / Load <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapse"/></h2>
+	<h2 :class="collapsedClass">Save / Load <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapseTitle"/></h2>
 	<div class="collapsible" :class="collapsedClass">
 		<div>
 			<form @submit.prevent>
@@ -64,6 +69,7 @@ function onSave() {
 				</div>
 				<div>
 					<button @click="onLoad">Load layout</button>
+					<button @click="onDelete" class="primary">Delete layout</button>
 				</div>
 			</form>
 		</div>

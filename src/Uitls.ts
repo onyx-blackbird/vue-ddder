@@ -31,3 +31,7 @@ export function unrefMap<T extends Object>(sourceMap: Map<string, T>): Map<strin
 	});
 	return plainMap;
 }
+
+export function replaceNewline(input: string | undefined): string {
+	return input ? input.replace('\n', '<br>') : '';
+}

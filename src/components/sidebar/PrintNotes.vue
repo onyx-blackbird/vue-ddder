@@ -22,13 +22,13 @@ const language = computed(() => eventStormStore.getState().currentLanguage);
 const notes = computed(() => eventStormStore.getState().notes.filter(note => 
 	selectedTypes.value.find(noteType => noteType.type === note.type) && note.getTranslation(language.value)?.title
 ));
-const { collapsedClass, icon, toggleCollapse } = useCollapse();
+const { collapsedClass, icon, toggleCollapseTitle } = useCollapse();
 </script>
 
 <template>
-	<h2 :class="collapsedClass">Print Cards <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapse"/></h2>
+	<h2 :class="collapsedClass">Print Cards <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapseTitle"/></h2>
 	<div class="collapsible" :class="collapsedClass">
-		<div>
+		<div class="cardselect">
 			<form @submit.prevent>
 				<div>
 					<vue-multiselect v-model="selectedTypes"
@@ -74,6 +74,10 @@ const { collapsedClass, icon, toggleCollapse } = useCollapse();
 	border: none;
 	margin: 0 0 1mm 0;
 	font-size: 2em;
+}
+
+.collapsible:not(.collapsed) .cardselect {
+	height: 320px;
 }
 
 .multiselect__tag {

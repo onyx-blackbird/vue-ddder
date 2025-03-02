@@ -12,8 +12,10 @@ const model = defineModel<Note|null>();
 const languages = computed(() => eventStormStore.getState().languages);
 const { showModal, closeModal } = useModal(model as ModelRef<Note|null>);
 const translationsRef: Ref<Array<Translation>> = ref([]);
+	
 watch(model, (newNote) => {
 	if (newNote != null) {
+		translationsRef.value = [];
 		const translations = unrefMap(newNote.translations);
 		languages.value.forEach(language => {
 			const translation = translations.get(language) || {title: '', description: ''};

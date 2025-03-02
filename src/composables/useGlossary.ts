@@ -1,4 +1,5 @@
 import { eventStormStore } from '../store/EventStorm';
+import { replaceNewline } from '../Uitls';
 
 export default function useGlossary() {
 
@@ -43,13 +44,13 @@ export default function useGlossary() {
 				const translation = note.getTranslation(language);
 				if (translation && translation.title) {
 					row.push(`**${translation.title}**`);
-					row.push(`${translation.description}`);
+					row.push(`${replaceNewline(translation.description)}`);
 				} else {
 					row.push('');
 					row.push('');
 				}
 			});
-			markdown.push(`| ${row.join(' | ')} |  `)
+			markdown.push(`| ${row.join(' | ')} |  `);
 		});
 		return markdown.join('\n');
 	}

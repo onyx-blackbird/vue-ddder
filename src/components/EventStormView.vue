@@ -7,7 +7,7 @@ import useNote from '../composables/useNote';
 import useScroll from '../composables/useScroll';
 import { NOTE_TYPES, SIZE } from '../models/Note';
 
-import EditorGrid from './EditorGrid.vue'
+import EventStormGrid from './EventStormGrid.vue'
 import SideBar from './sidebar/SideBar.vue'
 
 const { onNewNoteDragStart, onNewNoteDrop } = useNote();
@@ -24,40 +24,49 @@ onMounted(() => {
 </script>
 
 <template>
-	<main>
-		<aside class="left" ref="aside" @scroll="onScroll">
-			<h2>Notes</h2>
-			<div class="note template" v-for="(note) in NOTE_TYPES"
-				draggable="true"
-				:key="note.type"
-				:class="note.type"
-				:style="noteStyle"
-				@dragstart="onNewNoteDragStart($event, note)">
-				{{ note.title }}
+	<div class="eventstorm">
+		<main>
+			<aside class="left" ref="aside" @scroll="onScroll">
+				<h2>Notes</h2>
+				<div class="note template" v-for="(note) in NOTE_TYPES"
+					draggable="true"
+					:key="note.type"
+					:class="note.type"
+					:style="noteStyle"
+					@dragstart="onNewNoteDragStart($event, note)">
+					{{ note.title }}
+				</div>
+				<div class="scroll up" v-show="showScrollUp"
+					@click="scrollToTop">
+					<font-awesome-icon :icon="['fas', 'angles-up']"/>
+				</div>
+				<div class="scroll down" v-show="showScrollDown"
+					@click="scrollToBottom">
+					<font-awesome-icon :icon="['fas', 'angles-down']"/>
+				</div>
+			</aside>
+			<div class="center" v-dragscroll:nochilddrag>
+				<event-storm-grid
+					@dragover.prevent
+					@drop="onNewNoteDrop"/>
 			</div>
-			<div class="scroll up" v-show="showScrollUp"
-				@click="scrollToTop">
-				<font-awesome-icon :icon="['fas', 'angles-up']"/>
-			</div>
-			<div class="scroll down" v-show="showScrollDown"
-				@click="scrollToBottom">
-				<font-awesome-icon :icon="['fas', 'angles-down']"/>
-			</div>
-		</aside>
-		<div class="center" v-dragscroll:nochilddrag>
-			<editor-grid
-				@dragover.prevent
-				@drop="onNewNoteDrop"/>
-		</div>
-		<aside class="right">
-			<side-bar/>
-		</aside>
-	</main>
+			<aside class="right">
+				<side-bar/>
+			</aside>
+		</main>
+	</div>
 </template>
 
 <style>
 :root {
 	--sidebar-width: 300px;
+}
+
+.eventstorm {
+	display: grid;
+	grid-template-rows: 1fr;
+	height: 100vh;
+	width: 100vw;
 }
 main {
 	display: grid;

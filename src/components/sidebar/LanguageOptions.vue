@@ -13,7 +13,7 @@ const language = computed({
 	get: () => eventStormStore.getState().currentLanguage,
 	set: (newValue: string) => eventStormStore.setLanguage(newValue)
 });
-const { collapsedClass, icon, toggleCollapse } = useCollapse(false);
+const { collapsedClass, icon, toggleCollapseTitle } = useCollapse(false);
 
 const showLanguageModal = ref(false);
 function onShowLanguageModal() {
@@ -22,7 +22,7 @@ function onShowLanguageModal() {
 </script>
 
 <template>
-	<h2 :class="collapsedClass">Languages <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapse"/></h2>
+	<h2 :class="collapsedClass">Languages <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapseTitle"/></h2>
 	<div class="collapsible" :class="collapsedClass">
 		<div>
 			<form @submit.prevent>

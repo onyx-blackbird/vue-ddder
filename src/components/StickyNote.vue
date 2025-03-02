@@ -9,7 +9,6 @@ import Note, { CHANGE_NOTE, DELETE_NOTE } from '../models/Note';
 
 interface Props {
 	note: Note,
-	readonly?: boolean,
 }
 const props = defineProps<Props>();
 
@@ -23,7 +22,6 @@ const editMode = ref(false);
 const input = useTemplateRef('title-input');
 
 function onDblCLick() {
-	if (props.readonly) return;
 	editMode.value = true;
 	nextTick(() => input.value!.focus());
 }
@@ -36,11 +34,13 @@ const onResizeObserver = debounce(
 	(entries: any) => {
 		const [entry] = entries;
 		let { width, height } = entry.contentRect;
-		if (eventStormStore.getState().snap) {
-			width = Math.ceil(width / GRID_SIZE) * GRID_SIZE;
-			height = Math.ceil(height / GRID_SIZE) * GRID_SIZE;
+		if (width > GRID_SIZE && height > GRID_SIZE) {
+			if (eventStormStore.getState().snap) {
+				width = Math.ceil(width / GRID_SIZE) * GRID_SIZE;
+				height = Math.ceil(height / GRID_SIZE) * GRID_SIZE;
+			}
+			props.note.resize(width, height);
 		}
-		props.note.resize(width, height);
 	},
 	100
 );
@@ -52,7 +52,7 @@ const onResizeObserver = debounce(
 		:class="note.type"
 		:style="note.style"
 		@dblclick="onDblCLick">
-		<div class="edit" v-if="!readonly">
+		<div class="edit">
 			<font-awesome-icon
 				:icon="['far', 'pen-to-square']"
 				@click="emit(CHANGE_NOTE)"/>

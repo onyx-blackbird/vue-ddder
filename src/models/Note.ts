@@ -64,7 +64,7 @@ export default class Note {
 			left: this._coordinates.x + 'px',
 			top: this._coordinates.y + 'px',
 			width: this._size.width + 'px',
-			height: this.size.height + 'px',
+			height: this._size.height + 'px',
 		};
 	}
 
@@ -76,6 +76,13 @@ export default class Note {
 		this._translations.set(language, {
 			title,
 			description: this._translations.get(language)?.description
+		});
+	}
+
+	public setDescription(language: string, description: string): void {
+		this._translations.set(language, {
+			title: this._translations.get(language)!.title,
+			description
 		});
 	}
 

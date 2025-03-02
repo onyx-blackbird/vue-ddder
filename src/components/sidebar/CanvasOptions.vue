@@ -7,7 +7,7 @@ import { GRID_SIZE } from '../../Uitls';
 import { eventStormStore } from '../../store/EventStorm';
 import useCollapse from '../../composables/useCollapse';
 
-const { collapsedClass, icon, toggleCollapse } = useCollapse();
+const { collapsedClass, icon, toggleCollapseTitle } = useCollapse();
 
 const snap = computed({
 	get: () => eventStormStore.getState().snap,
@@ -28,7 +28,7 @@ const gridHeight = computed({
 </script>
 
 <template>
-	<h2 :class="collapsedClass">Canvas Options <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapse"/></h2>
+	<h2 :class="collapsedClass">Canvas Options <font-awesome-icon :icon="['fas', icon]" @click="toggleCollapseTitle"/></h2>
 	<div class="collapsible" :class="collapsedClass">
 		<div>
 			<form @submit.prevent>

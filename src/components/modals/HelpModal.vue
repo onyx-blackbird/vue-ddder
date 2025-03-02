@@ -44,13 +44,27 @@ const model = defineModel({required: true, default: false});
 			<h3>Save and Load</h3>
 			<ul>
 				<li>The whole layout can be saved in the local storage of the browser.</li>
-				<li>This layout can be loaded again to continue the work.</li>
+				<li>The stored layouts can be loaded again to continue the work.</li>
 			</ul>
 			<h3>Import and Export</h3>
 			<ul>
 				<li>The whole layout can be exported as a JSON file.</li>
 				<li>This exported JSON file can be imported again to continue the work.</li>
 				<li>It is recommended to add descriptions to notes so they can be exported as a basis for the ubiquitos language; either in JSON format or Markdown to be used in Wikis</li>
+			</ul>
+			<h3>Glossary</h3>
+			<ul>
+				<li>The title and descriptions of the notes can be exported in 3 different formats:
+					<dl>
+						<dt>JSON</dt>
+						<dd>Grouped by the language</dd>
+						<dt>Markdown</dt>
+						<dd>Simple Markdown format grouped by language</dd>
+						<dt>Markdown (extended)</dt>
+						<dd>Using the extended Markdown syntax to display the glossary in a table structure</dd>
+					</dl>
+				</li>
+				<li>The glossary can also be shown and edited as a table on a separate screen, which can be accessed with the "Show glossary table" link.</li>
 			</ul>
 			<h3>Print</h3>
 			<p>

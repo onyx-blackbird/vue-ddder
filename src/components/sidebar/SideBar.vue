@@ -9,24 +9,13 @@ import ImportExport from './ImportExport.vue';
 import PrintNotes from './PrintNotes.vue';
 import LocalStorage from './LocalStorage.vue';
 import HelpModal from '../modals/HelpModal.vue';
+import GlossaryExport from './GlossaryExport.vue';
 
 import { eventStormStore } from '../../store/EventStorm';
+import useCollapse from '../../composables/useCollapse';
 
-const EXPANDED = '300px';
-const COLLAPSED = '50px';
-
-const collapsed = ref(false);
+const { collapsedSidebar, onToggleCollapseSidebar } = useCollapse({collapsedSidebar: false});
 const showHelpModal = ref(false);
-
-function onToggleCollapse() {
-	if (collapsed.value === true) {
-		collapsed.value = false;
-		document.documentElement.style.setProperty('--sidebar-width', EXPANDED);
-	} else {
-		collapsed.value = true;
-		document.documentElement.style.setProperty('--sidebar-width', COLLAPSED);
-	}
-}
 
 function onShowHelpModal() {
 	showHelpModal.value = true;
@@ -34,11 +23,11 @@ function onShowHelpModal() {
 </script>
 
 <template>
-	<div class="sidebar" v-show="!collapsed">
+	<div class="sidebar" v-show="!collapsedSidebar">
 		<div class="icons">
 			<font-awesome-icon class="collapse" title="collapse"
 				:icon="['fas', 'angles-right']"
-				@click="onToggleCollapse"/>
+				@click="onToggleCollapseSidebar"/>
 			<font-awesome-icon class="help" title="help"
 				:icon="['far', 'circle-question']"
 				@click="onShowHelpModal"/>
@@ -49,13 +38,18 @@ function onShowHelpModal() {
 			:export="eventStormStore.export.bind(eventStormStore)"
 			:import="eventStormStore.import.bind(eventStormStore)"/>
 		<import-export/>
+		<glossary-export title="Glossary" :collapsed="true">
+			<div class="link">
+				<router-link to="/glossary">Show glossary table</router-link>
+			</div>
+		</glossary-export>
 		<print-notes/>
 	</div>
-	<div class="sidebar collapsed" v-show="collapsed">
+	<div class="sidebar collapsed" v-show="collapsedSidebar">
 		<div class="icons">
 			<font-awesome-icon class="collapse" title="expand"
 				:icon="['fas', 'angles-left']"
-				@click="onToggleCollapse"/>
+				@click="onToggleCollapseSidebar"/>
 		</div>
 		<h2 class="vertical">Options and Tools</h2>
 	</div>
@@ -80,6 +74,7 @@ function onShowHelpModal() {
 }
 .sidebar form {
 	border: 1px solid #333333;
+	border-radius: 0.5em;
 	padding: 0.5em;
 	margin-bottom: 1em;
 }
